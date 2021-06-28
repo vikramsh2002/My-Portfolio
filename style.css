@@ -1,0 +1,718 @@
+@import 'utility.css';
+:root{
+    /*
+       Make Variables to use colors in future any where
+    */
+    --color1:#3DCFD3;
+    --darkcolor:#161616;
+    --pure_color:white;
+    --color3_grey: #898989;
+    --lightcolor: #F2F2F2;
+    --color4: #070606;
+    --color5:#F33A6A;
+    --color6:#f9f5ec;
+    
+}
+body{
+    height: 600px;
+}
+html{
+    scroll-behavior: smooth; /* Smooth Scroll Down Animations*/
+}
+*{
+    /* Apply to all elements */
+    padding:0px;
+    margin:0px;
+    box-sizing: border-box;
+    /*  Smothing the Fonts*/
+    -webkit-font-smoothing: antialiased;
+}
+
+body{
+    font-family: 'Poppins',sans-serif;
+    /* If poppin not work then sans serif*/
+    background-color:var(--pure_color);
+}
+
+header{
+    background-color:var(--darkcolor);
+    /*
+    * Puting curvy edge in section 2
+    * Change Points by polygon
+    * If x is from one pt to another entire screen so 
+    * x is 100%
+    * x = 0% then it is at starting of screen
+    * polygon(all the points to cover in %)
+    * eg: we need a triange
+    * Point 1 = 50% 0   ----> x y
+    * Point2  = 100% 100%
+    * Point 3 = 0 100%
+    */
+  /*clip-path: polygon(50% 0, 100% 100%, 0 100%);  
+     Perfect Triangle */ 
+     clip-path: polygon(0 0,100% 0, 96% 100%, 60% 90%, 0 100%); 
+     margin-top:0px auto; 
+}
+.container{
+    max-width:1152px;
+    padding:0px 15px;
+    margin: 0 auto;
+
+}
+header nav .left a{
+    color: var(--pure_color);
+    text-decoration: None; /* Remove Underline*/
+    margin-right: 15px;
+    text-transform: uppercase;
+    /* Smooth the Color Change*/
+    transition:all .8s ease;
+    font-size: large;
+}
+header nav .left a:hover{
+    color: var(--color1);
+}
+header nav{
+    padding: 2rem 0; 
+}
+header nav .logo{
+    margin-right: 3rem;
+}
+
+/*
+
+----------------------------------
+Section 2
+
+----------------------------------
+
+*/
+ 
+.MyIntro .right{
+    color: var(--pure_color);
+}
+.MyIntro .right h5{
+     font-size: 1.6rem;
+     color: var(--color1);
+     margin-bottom:0.5rem;
+
+}
+.MyIntro .right h1{
+    font-size:3rem;
+    font-weight: 100;
+    line-height: 1.2;
+    margin-bottom: 2rem;    
+}
+.MyIntro .right h1 span{
+    color: var(--color1);
+}
+.MyIntro .right p{
+    line-height: 1.9;
+    margin-bottom:2rem;
+}
+
+.MyIntro{
+    padding:3rem 0; 
+    margin-top: 0rem;
+
+}
+.MyIntro .right{
+/* Move Block up*/
+margin-top:-7rem ;
+
+}
+
+
+/*
+*   *---------------------------------
+*        About Page
+*   *---------------------------------
+*/
+section{
+    padding: 6rem 0;
+}
+.about h1{
+    margin-bottom: 1rem;
+    font-size: 1.6rem;
+    font-weight: 400;
+} 
+.about h1 span{
+    color: var(--color1);
+}
+.about h3{
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 400;
+}
+
+.about p{
+    font-family: 'Lato' sans-serif;
+    color:var(--color3_grey);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+.abimg {
+    width:400px;
+    height:500px;
+    
+    background-repeat: no-repeat;
+    animation: abtimg 6s alternate-reverse infinite;
+}
+@keyframes abtimg {
+    0%{
+        background-image: url("Images/Mypic_About1.png");
+        
+    }
+    50%{
+        background-image: url("Images/Mypic_About2.png");
+    }
+    100%{
+        background-image: url("Images/Mypic_About3.png");
+        
+    }
+    
+}
+.container .AData:hover{ 
+    padding: 40px 60px;
+     border: 5px double var(--color1);
+}
+.abimg:hover{
+    box-shadow: 0 4px 6px 0 var(--color1), 0 6px 6px 0 rgba(0, 0, 0, 0.19);
+    transform:scale3d(1.2,1.2,1.2);
+} 
+.social{
+    display:flex;   
+}
+.social a{
+    display:block;
+    
+    align-items: center;
+    justify-content:center;
+    margin-right: 1rem;
+    margin-top:0.5rem;
+    border: 1px solid var(--darkcolor);
+    border-radius: 50%;
+    background-color: var(--darkcolor);
+}
+.social a img
+{
+    padding: 0.8rem;
+    width:60px;
+    height:60px;
+    border-radius: 50%;
+    transition: all .3s ease;
+    transform: scale(1,1); /* zomm out use*/
+}
+.social a img:hover{
+    background-color: var(--color1);
+    transform:scale(1.2,1.2); /* This use for Zoom in*/
+    height: 70px;
+    width: 70px;
+}
+
+
+/*
+*-----------------------------------------
+*         Skills
+*-----------------------------------------
+*/
+.secHead{
+     color: var(--color4);
+     text-align: center;
+     margin-bottom:1rem;
+     line-height: 1.5;
+     
+}
+.card img{
+    height:120px;
+    width:120px;
+    border: 5px solid var(--color1);            
+}
+.secHead + p{ /* + is use to show next tag after secHead class*/
+    color: var(--color3_grey);
+    font-family: 'Lato' sans-serif;
+    margin-bottom:7rem;
+    text-align: center;
+   
+}
+.secHead span{
+    color:var(--color1);
+}
+.skills{
+    background-color: var(--lightcolor);
+}
+
+/* Using Grid*/
+.card-wrapper{
+    display: grid;
+    /* 2 rows and 3 columns*/
+    /* grid-template-columns: 1fr 1fr 1fr;*/ /* This is little Hatrick*/
+    grid-template-columns: repeat(3,1fr);
+    grid-column-gap:2rem;
+    grid-row-gap:6rem;
+}
+.card{
+    background-color: var(--pure_color);
+    padding:2rem 2rem;
+    position: relative;
+    padding-top:4rem;
+    text-align: center;
+    transition: all .3s ease;
+}
+
+/* Put Image in b/w like a card float on card*/
+.card img{
+    position: absolute; /*  absoute search for relative and by that as 
+    reference it moves so here it uses card 
+    */
+    top:-4.5rem; /*Go up  */
+    left:50%; /* Here image starting is at 50% position now we need to move img by left*/
+    transform: translateX(-50%); /* move by 50%*/ 
+}
+
+.carc h2{
+    font-weight: 400;
+    font-size: 1.2rem;
+    margin-bottom:0.5rem;
+    
+}
+.card p{
+    font-family: 'Lato' sans-serif;
+    color: var(--color3_grey);
+    line-height: 1.6rem;
+}
+.card:hover{
+    background-color:var(--darkcolor);
+    border: 5px solid var(--color1);
+}
+.card:hover h2{
+    color: var(--pure_color);
+}
+.card:hover p{
+    color: var(--pure_color);
+}
+
+
+/*
+**********************************************************************
+      Qualification Page
+**********************************************************************
+*/
+
+.Qual{
+    text-align: center;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),url("Images/Qual.jpg");
+    color: var(--pure_color);
+    background-repeat: no-repeat;
+    padding:50px;
+    clip-path: polygon(0 0 ,50% 0, 60% 5%, 70% 0%, 100% 0, 100% 100%, 0% 100% );
+    padding-bottom: 300px;
+    background-size: stretch;
+
+}
+.Qual  h1{
+    margin-bottom: 4rem;
+    margin-top:0.5rem;
+    cursor: pointer;
+    transition: all .8s ease;
+}
+.Qual h1:hover{
+    color:yellow;
+    transform: scale(1.2,1.2);
+}
+
+.Qual div  p{
+    margin-bottom: 2rem;
+    font-family: 'Lato' sans-serif;
+    cursor: pointer;
+    transition: all .8s ease;
+}
+.Qual.div{
+    transition: all .8s ease;
+}
+.Qual div:hover{
+      
+      border: 10px double var(--color1);
+      display: block;
+      margin-top: 2rem;
+      padding: 2rem 2rem;
+      
+}
+.Qual div p:hover{
+    color:var(--color1);
+    transform: scale(1.2,1.2);
+}
+
+/*
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*                            Certification Page
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+
+*/
+
+.Cert{
+    background-color: var(--lightcolor);
+    font-family: 'Lato' sans-serif;
+}
+.Cert h1{
+    text-align: center;
+    margin-bottom: 7rem;
+    color:var(--darkcolor);
+    cursor: pointer;
+    font-size: 50px;
+    color: #FDB813;
+    transition: all 0.8s ease
+}
+.Cert h1:hover{
+    color:var(--color6);
+    animation: Yo 10s  infinite;
+}
+@keyframes Yo {
+    0%{
+        color:#D14009;
+    }
+    25%{
+         color: #fc9601;
+    }
+    50%{
+        color: #FFCC33;
+    }
+    75%{
+        color: #ffe484;
+    }
+    100%{
+        color:var(--color6); /* Fade away*/
+    }
+}
+
+.Cert h1 span{
+    color:var(--color1);
+    transition: all 0.3s ease;
+}
+.Cert h1 span:hover{
+    color:var(--color5);
+}
+
+/*
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*                            Experience Page
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*/
+.exp{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    font-family: 'Lato' sans-serif;
+    background :linear-gradient(to right,  #ffc371 ,#a1c4fd ,#c2e9fb 10%);
+    background-size: 100% 200% 200%;
+    background-repeat:no-repeat;
+}
+.exp .container{
+    text-align: center;
+
+}
+.exp .container h1{
+    font-family: 'Lato' sans-serif;
+    font-size:40px;
+    margin-bottom: 2rem;
+      
+}
+.exp .container p{
+       color: var(--color3_grey);
+       font-size: 20px;
+       margin-bottom: 2rem;
+       line-height: 1rem;
+       padding:2rem;
+       justify-content:center;
+       
+       
+       
+}
+.head span{
+    color: var(--color1)
+}
+
+.box .head{
+    margin: 2rem;
+    text-align: center;
+    justify-content:center;
+    transition: 0.3s all ease;
+}
+.container .head{
+    color:orangered;
+}
+.container .head:hover{
+    color:var(--color5);
+    transform: scale(1.2,1.2);  
+}
+.container .head:hover span{
+    color:springgreen;
+    transform: scale(1.2,1.2);
+}
+
+.box p{
+    margin:0.8rem;
+    justify-content: center;
+}
+
+.row{
+    display: flex;
+    margin-left: 20%;
+    margin-bottom: 2rem;
+    
+}
+.box{
+      display: flex;
+      flex-direction: column;
+      width: 600px;
+      height: 400px;
+      border: 2px solid var(--color5);
+       padding: 10px;
+       border-radius: 15%;
+       background: linear-gradient(to top,#0f6077 50%, black 50%);   
+       background-size: 100% 200%;
+       transition: all 0.2s ease; 
+       color:var(--pure_color);
+       
+        
+}
+.box:hover{
+    background-position: left bottom;
+    color:var(--pure_color);
+    border: 2px solid var(--color1);
+    box-shadow: 0 0 20px var(--color3_grey);
+}
+
+.expcert img{
+    height:300px;
+    width: 400px;
+    margin-bottom: 0px;
+    
+}
+.expcert{
+    display: block;
+    padding:0px 0px;
+    
+}
+.expcert:hover{
+    margin-left: 50px;
+}
+.expcert:hover img{
+    transform: scale(1.2,1.2);
+
+}
+
+/*
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*                          Contact Section
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*/
+.contact .container {
+    font-family: 'Poppins',sans-serif;
+    text-align: center;
+}
+.contact .container h1{
+    margin-bottom: 2 rem;
+    color:var(--darkcolor);
+    cursor: pointer;
+    font-size: 50px;
+    color: var(--darkcolor);
+}
+.contact .container h1 span{
+    color: var(--color1);
+}
+.contact .container p{
+    color:var(--color3_grey);
+    font-size: large;
+    margin-bottom: 10rem;
+}  
+#c1{
+    margin-left: 2rem;
+    background: linear-gradient(to top, #7fff00 50%, yellow 50%);
+    background-size: 100% 200%;
+}
+#c1:hover{
+    background-position: left bottom;
+
+}
+#c1 img{
+    border:none;
+}
+#c1 h1{
+    color:royalblue;
+}
+#c1 p{
+    color:purple; 
+}
+#c1:hover h1{
+    color:blue;
+}
+#c1:hover p{
+    color: var(--pure_color);
+}
+/*
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*                          Footer  END 
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*/
+
+footer{
+    background-color:var(--darkcolor);
+    text-align: center;
+    padding:3rem;
+    align-items: center;
+}
+footer img{
+    width:200px;
+    height: 150px;
+    top:20px;
+}
+footer .Fsocl{
+    margin-left:500px;
+    margin-bottom:2rem;
+}
+
+.bck{
+    
+    text-decoration: none;
+    color:var(--pure_color);
+    border: 2px double white;
+    padding:0.5rem;
+    left:50px;
+    margin-top: 5rem;
+    margin-left: 1rem;
+     transition: all .3s ease;
+}
+.bck:hover{
+    background-color:var(--color1);
+    color:var(--darkcolor);
+    border: 6px double var(--color5);
+    transform: scale(1.3,1.3);
+}
+
+
+
+/*
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*                          Making  Responsive 
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*/
+
+.site-main-wrapper{
+   position:relative;
+   
+}
+.ham{
+    position:absolute;
+    top:50px;
+     right:30px;
+    z-index: 11; /* Bring Forward*/
+    background: none;
+    border: none;
+    outline:none;
+    cursor:pointer;
+}
+.mob-nav{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index: 1001;
+    background-color: var(--lightcolor);
+    width: 100%;
+    height:100%;
+    padding:40px;
+    transform: translateX(-100%); /*Move on X -axis
+    
+     Go to Left Side */
+     transition: all .8s ease-in-out;
+}
+.times{
+    position:fixed;
+    top:20px;
+    right:30px;
+    background:none;
+    border: none;
+    outline:none;
+    cursor:pointer;
+}
+.mob-nav ul{
+    list-style-type: none;
+    
+}
+.mob-nav ul a{
+    text-decoration: none;
+    color: var(--darkcolor);
+    font-size: 3rem;
+}
+
+.open{
+    transform:translateX(0);
+}
+
+/**
+
+    PAD pro
+*/
+
+@media (max-width:1024px)
+{
+  header #main-nav{
+      display:none;
+
+  }
+  .left img{
+      width: 260px;
+
+  } 
+  .abimg{
+      width:260px;
+  }
+  .box .head{
+      font-size:  0.8rem;
+  }
+  .box p{
+      font-size: 0.5rem;
+  }
+  .expcert img{
+      width:250px;
+      height: 250px;
+  }
+  .box{
+      width:300px;
+      height: 250px;
+      margin-left: 0px;
+  }
+  .card-wrapper{
+      grid-template-columns: repeat(2,1fr);
+  }
+  
+}
+
+
+/*  Iphones*/
+
+@media (min-width:576px){
+    .container{
+        max-width: 540px;
+      /* 
+      *  If My Width is lesser than 570 then
+      * contianer cam be max 540
+      **/
+    } 
+    
+
+}
+@media (min-width:768px){
+    .container{
+        max-width: 720px;
+
+    }
+}
+@media (min-width:992px){
+    .container{
+        max-width:960px;
+}
+@media (min-width:1200px){
+    .container{
+        max-width: 1152px;
+    }
+}

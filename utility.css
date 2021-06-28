@@ -1,0 +1,54 @@
+.flex{
+    display:flex; /* Class for using in style*/
+    
+}
+.flex-1{
+    flex:1;
+}
+.item-center{
+    align-items:center;
+}
+.justify-bw{
+    justify-content: space-between;
+}
+.justify-center
+{
+    justify-content:center;
+}
+
+/*
+Classes for button 
+   there comman prop are in btn
+   but different is at btn prim
+*/
+.btn{
+    padding:0.8rem 3rem;
+    /*0.8= top+botton
+      3 = left right*/
+      font-size: 1rem;
+      font-weight:bold;
+      border: 2px solid transparent;
+      outline: none;
+      cursor:pointer; 
+      text-transform: uppercase;
+      transition: all .8s;
+}
+.btn-prim{
+    color:var(--darkcolor);
+    background-color:var(--color1);
+    margin-left: 3rem;
+}
+.btn-prim:hover{
+    background-color: transparent;
+    border-color: var(--color1);
+    color:var(--color1);
+}
+.btn-sec{
+    color: var(--color1);
+    border-color: var(--color1);
+    background-color: transparent;
+}
+.btn-sec:hover{
+    color:var(--darkcolor);
+    background-color:var(--color1);
+}

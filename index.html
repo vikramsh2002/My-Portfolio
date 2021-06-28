@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to My Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <!--- Using New Font Poppins-->
+    <!--Poppins-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+     <!--Lato-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet"> 
+   
+    <!-- Adding logo to website -->
+    <link rel="icon", href="Images/MyLogoDark.png" sizes="40x40" type="image/png">
+
+
+   <!--Importing JQUERY  -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <script>
+       $(document).ready(function(){
+let ham=document.querySelector(".ham");
+let times = document.querySelector(".times");
+let mob =document.querySelector(".mob-nav");
+/**
+ *  Add a Listener
+ * 
+ */
+ham.addEventListener('click' ,function(){
+    mob.classList.add('open'); /**
+    Add the Class in Class List of Mobile Now
+    */
+});
+times.addEventListener('click', function(){
+    mob.classList.remove('open');
+});
+
+});
+
+  function downloadresume(){
+      document.location='https://drive.google.com/uc?id=11sekW6OQ_LNJCug-FIni1yPWMhBTjIZ0&export=download';
+  }
+
+       </script>
+</head>
+<body>
+  <div class="site-main-wrapper">
+    <header id="Home">
+        <div class="container">
+        <nav id="main-nav" class="flex item-center  justify-bw">    <!-- It is navigation bar with 2 blcks 1 button 2nd is list-->
+            <div class ="left flex item-center"> <!---It has 2 classes left nd flex-->
+                 <!---It also has 2 div 1 for logo 1 for menu-->
+                  <div class="logo">         
+                       <img src ="Images/MyLogoLight.png" height=150px width=200px alt="mylogo" />
+    
+                  </div>
+    
+                  <div>
+                  <a href="#"> Home </a>
+                  <a href="#About"> About </a>
+                  <a href="#Skills"> Skills </a>
+                  <a href="#Qualification"> Qualification </a>
+                  <a href="#Certificate"> Certifications </a> 
+                  <a href="#Experience"> Experience </a>   
+                  </div>
+            </div>
+            <div class ="right item-center">
+                <a href="#con"><button class="btn btn-prim"> Contact </button>
+                </a>
+                </div>
+        </nav>
+    <!-- *****************  Section 2 Pic Data and Download CV ******************     -->
+         <div class ="MyIntro flex item-center justify-bw">
+                <div class="left flex-1 flex">
+                    <img src="Images/Mypic.png" height=800 width=400 alt="My Image">
+                </div>
+                
+                <div class ="right flex-1 justify-center">
+                    <h5>Vikram Sharma</h5>
+                    <h1>I am a Passionate<br> <span>Programmer and a Pythonist</span>  </h1>
+                    <p>Self-motivated and hardworking Student seeking an opportunity to work in a challenging environment to prove my coding skills and utilize my knowledge of various databases for the growth of the organization.
+                       Now, I am Learning Machine Learning and Containerisation and its Mangement with the Help of Kubernetes.
+                    </p>
+                    <div>
+                        <button class="btn btn-sec" onclick="downloadresume()">Download Resume </button>
+                    </div>
+                </div>
+    
+         </div>          
+        </div> 
+      </header>
+      
+    <button class="ham">
+          <img src="Images/han.jpg" height=30px ,width=30px, alt="Hamburger Menu Icon"/>
+      </button>
+      <img src="">
+     <div class="mob-nav">
+         <button class="times">
+             <img src="Images/times.png" height=30px width=30px>
+         </button>
+         <img src ="Images/MyLogoDark.png" height=150px width=200px alt="mylogo" />
+         <ul>
+        <li><a href="#Home"> Home </a>
+        <li><a href="#About"> About </a>
+        <li><a href="#Skills"> Skills </a>
+        <li><a href="#Qualification"> Qualification </a>
+        <li><a href="#Certificate"> Certifications </a> 
+        <li><a href="#Experience"> Experience </a>   
+       </ul>  
+    </div>  
+    
+      <!-- About Page Section-->
+      <section id="About" class = "about">
+               <div  class="container flex item-center">
+                   <div class="flex-1">
+                     <div class="abimg"> </div>
+                    </div> 
+                    
+                    <div class="flex-1 AData">
+                        <h1>About <span>Me</span></h1>
+                        <h3>Hello, I'm Vikram Sharma </h3>
+                    <p>
+                        I am currently pursuing Integrated B.tech + M.tech in Computer Science and Engineering from Lovely Professional University. I hail from Ajmer, Rajasthan. I am a hard worker, a team player, an honest and trustworthy guy. I am a Web developer, Pythonist.
+                        Some other technology I know is Containerisation and its management via Kubernetes. My some areas of interest are DevOps, ML, AI, Data Wrangling, and Analysis.                       
+                    </p>
+                      <div class="social">
+                        <a href="https://www.hackerrank.com/vikramsh2002"><img src="Images/HR.png" alt="Hackerrank" ></a>
+                        <a href="https://www.linkedin.com/in/vikram-sharma-740377187"><img src="Images/link.png" alt="LinkedIn" ></a>
+                        <a href="https://github.com/vikramsh2002"><img src="Images/Git.png" alt="GitHub" ></a>
+                        <a href="https://twitter.com/VikramS82206499?s=08"><img src="Images/twitter.png" alt="Twitter"></a>
+                        <a href="https://www.instagram.com/vikramsh20?r=nametag"><img src="Images/insta.png" alt="Instagram"></a>  
+                
+    
+                      </div>
+                    </div>
+    
+               </div>
+       </section>
+    
+    
+      <!-- Skills Page ....................--->
+      <section id="Skills" class="skills">
+            <div class="container">
+               <h1 class="secHead"><span>My</span> Skills</h1>
+               <p>I am workaholic not alcoholic and Work is Worship for me.</p>
+            </div>
+            <div class="card-wrapper">
+                  <div class="card">
+                      <img src="Images/web.png" alt="webimage">
+                      <h2>Web Development</h2>
+                      <p>I know HTML, CSS, JS, Python(For Server Scripting)</p>
+                      
+                   </div>
+            
+                   <div class="card">
+                    <img src="Images/Programming.png" alt="Programming">
+                    <h2>Programming Languages</h2>
+                    <p>Python JAVA C C++ and knowledge of Data Structures</p>
+                 </div>
+                 <div class="card">
+                    <img src="Images/dbms.jpg" alt="DBMS">
+                    <h2>DBMS</h2>
+                    <p>I know both MySQL and OracleDB </p>
+                 </div>
+    
+                 <div class="card">
+                    <img src="Images/devops.jpg" alt="Devops">
+                    <h2>DevOps</h2>
+                    <p>I am Learning about Containerisation and Its Mangement via Kubernetes</p>
+                 </div>
+    
+                 <div class="card">
+                    <img src="Images/ai.jpg" alt="Artificial Intelligence">
+                    <h2>AI</h2>
+                    <p>I am Learning about Machine Learning and various Data Wrangling Techniques</p>
+                 </div>
+                 
+                 <div class="card">
+                    <img src="Images/social.jpg" alt="Social Media Marketing">
+                    <h2>Social Media Marketing</h2>
+                    <p>I have also experienced in this field as Work under several Reputed Organization like Linux World Pvt Ltd , Coding Club , etc as a Campus Ambassadaor where I use social media efficiently to do there promotions </p>
+                 </div>
+                
+                </div>
+       </section>
+    
+    <!--   ********************************** Qualifications -->
+    
+    <section id="Qualification"class="Qual">
+               
+              <h1><span style="color:var(--color1);">My</span> Qualification</h1>
+              <div>
+              <p> I am a Coputer Science Engineering Student and my TGPA is 8</p>
+               <p>I am pursuing Integrated B.Tech + M.Tech in Computer Science and Engineering<br> from Lovely Professional University<br> (2019-2024)</p>   
+              </div>
+    </section>
+    
+    
+    <!--**************************Certifications ********************** -->
+    <section id="Certificate" class="Cert">
+        <h1><span>My</span> Certifications</h1>
+        <div class="card-wrapper">
+        
+            <div  class="card">
+                  <img src="Images/Certificate/Python.png",alt="Python 3 Certificate Image">
+                  <h2>Python3 Specialization</h2>
+    
+            </div>
+        
+            <div  class="card">
+                <img src="Images/Certificate/Java.png",alt="Object Oriented Programming with Java Certificate Image">
+                <h2>Object Oriented Programming with Java</h2>
+    
+            </div>
+    
+            <div  class="card">
+                <img src="Images/Certificate/Data Science.png",alt="Python for Data Science Certificate Image">
+                <h2>Python-101 for Data Science by IBM</h2>
+    
+          </div>
+      
+          <div  class="card">
+              <img src="Images/Certificate/DataAnalysis.png",alt="Data Analysis using Python Certificate Image">
+              <h2>Data Analysis with Python By IBM</h2>
+    
+          </div>
+         
+          <div  class="card">
+            <img src="Images/Certificate/Gpython.png",alt="Crash Course on Python Certificate Image">
+            <h2>Crash Course on Python By Google</h2>
+    
+          </div>
+    
+      <div  class="card">
+          <img src="Images/Certificate/SQL.png",alt="Data Manipulation with SQL Certificate Image">
+          <h2>Data Manipulation with SQL</h2>
+    
+      </div>
+    
+      <div  class="card">
+          <img src="Images/Certificate/ML.png",alt="Machine Learning for All Certificate Image">
+          <h2>Machine Learning for all</h2>
+    
+    </div>
+    
+    <div  class="card">
+        <img src="Images/Certificate/Cpp.png",alt="Object Oriented Data Structures with C++ Certificate Image">
+        <h2>Object Oriented Data Structures with C++</h2>
+    
+    </div>
+    
+    <div  class="card">
+        <img src="Images/Certificate/Sus.png",alt="Introduction to Sustainability Certificate Image">
+        <h2>Introduction to Sustainability</h2>
+    
+    </div>
+    </div>
+    </section>
+    
+    
+    <!--****************************** Experience Page ******************************  -->
+    
+    <section id="Experience" class="exp"> 
+         <div class="container">
+             <h1 class="head"> <span> My </span> Experience </h1>
+             <p> I have 1 year of experience in Social Media Marketing  as in this pandemic<br><br> I have Completed several internships under this field.</p>
+    
+         </div>
+    
+         <div class="row">
+            <div class="flex item-center justify-bw">
+                <div class="box">
+                    <h1 class="head">Arth Campus Ambassador at<br> Linux World Pvt. Ltd.</h1>
+                    <p> This was a Great Internship since I am working under World Record Holder Mr. Vimal Daga. 
+                      <br/>  The aim of the company is to provide the right education to youth.
+                       <br/> My responsibility here is conveying the information about this live course named Arth through Social Media Marketing.</p>
+                 </div>
+                 <div class="expcert">
+                <img src="./Images/Experience/lw.png" height=40px width=40px >
+                 </div>         
+            </div>
+    
+        </div>
+    
+    
+        <div class="row">
+            <div class="flex item-center justify-bw">
+                <div class="box">
+                    <h1 class="head">Campus Ambassador at <br>Coding Club </h1>
+                    <p> Need to do activities and promote e-learning courses. 
+                        <br/> Function as a Link between Coding Club and their target audience with respect to courses. </p>
+                 </div>
+                 <div class="expcert">
+                <img src="./Images/Experience/CCI.png" height=40px width=40px >
+                 </div>         
+            </div>
+    
+        </div>
+    
+    
+        <div class="row">
+            <div class="flex item-center justify-bw">
+                <div class="box">
+                    <h1 class="head">Campus Ambassador at <br>Greenthusiast Foundation </h1>
+                    <p> Main duty is to increase awareness of people towards environment by interesting activities and it 
+                        is an NGO that works for environment.
+                        <br/> Need to do activities and promote green events.
+                        <br/> This comes under some task which I did for not for me but for others.
+                 </div>
+                 <div class="expcert">
+                <img src="./Images/Experience/GE.png" height=40px width=40px>
+                 </div>         
+            </div>
+    
+        </div>
+    
+         
+    </section>
+
+  </div>
+
+
+<section class="contact" id="con">
+      <div class="container">
+          <h1>Contact <span>Us</span></h1>
+           <p> I am always open to work and Its always a pleasure in speaking to you. </p>
+      </div>
+    
+      <div class="card-wrapper">
+          <div class="card" id="c1">
+              <img src="Images/phic.png" alt="Phone Icon">
+              <h1>Call Us On</h1>
+              <p>+91-8758984387 </p>
+            </div>
+        
+          <div class="card" id="c1">
+            <img src="Images/mail.png" alt="Email Icon">
+            <h1>E-Mail Us On</h1>
+            <p>vikramsh2002@gmail.com</p>
+          </div>
+          
+          <div class="card" id="c1">
+            <img src="Images/wht.png" alt="WhatsApp Icon">
+            <h1>WhatsApp Us</h1>
+            <p>+91 9079824198</p>
+          </div>
+    </div>
+</section>
+
+
+<!-- Footer  At End-->
+
+<footer>
+       <img src="Images/MyLogoLight.png",alt="Our Logo">
+       <div class="Fsocl social">
+        <a href="https://www.hackerrank.com/vikramsh2002"><img src="Images/HR.png" alt="Hackerrank" ></a>
+        <a href="https://www.linkedin.com/in/vikram-sharma-740377187"><img src="Images/link.png" alt="LinkedIn" ></a>
+        <a href="https://github.com/vikramsh2002"><img src="Images/Git.png" alt="GitHub" ></a>
+        <a href="https://twitter.com/VikramS82206499?s=08"><img src="Images/twitter.png" alt="Twitter"></a>
+        <a href="https://www.instagram.com/vikramsh20?r=nametag"><img src="Images/insta.png" alt="Instagram"></a>  
+       </div>
+       <a href="#Home" class="bck">Go To Home </a>
+</footer>
+</body>
+</html>
