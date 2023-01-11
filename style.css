@@ -155,18 +155,26 @@ section{
     height:500px;
     
     background-repeat: no-repeat;
-    animation: abtimg 6s alternate-reverse infinite;
+    animation: abtimg 10s alternate-reverse infinite;
 }
 @keyframes abtimg {
     0%{
+        background-image: url("Images/Mypic_About0.jpg");
+        
+    }
+    25%{
         background-image: url("Images/Mypic_About1.png");
         
     }
     50%{
         background-image: url("Images/Mypic_About2.png");
     }
-    100%{
+    75%{
         background-image: url("Images/Mypic_About3.png");
+    }
+    
+    100%{
+        background-image: url("Images/Mypic_About4.jpg");
         
     }
     
