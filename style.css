@@ -11,6 +11,9 @@
     --color4: #070606;
     --color5:#F33A6A;
     --color6:#f9f5ec;
+    --border_but_hover:navy;
+    --bg_but_hover:#F5F5DC;
+    --projcard_bor:#5ced73;    ;
     
 }
 body{
@@ -66,7 +69,7 @@ header nav .left a{
     text-transform: uppercase;
     /* Smooth the Color Change*/
     transition:all .8s ease;
-    font-size: large;
+    font-size: 15px;
 }
 header nav .left a:hover{
     color: var(--color1);
@@ -231,11 +234,7 @@ section{
      line-height: 1.5;
      
 }
-.card img{
-    height:120px;
-    width:120px;
-    border: 5px solid var(--color1);            
-}
+
 .secHead + p{ /* + is use to show next tag after secHead class*/
     color: var(--color3_grey);
     font-family: 'Lato' sans-serif;
@@ -258,6 +257,12 @@ section{
     grid-template-columns: repeat(3,1fr);
     grid-column-gap:2rem;
     grid-row-gap:6rem;
+}
+
+.card img{
+    height:120px;
+    width:120px;
+    border: 5px solid var(--color1);            
 }
 .card{
     background-color: var(--pure_color);
@@ -558,6 +563,98 @@ section{
 #c1:hover p{
     color: var(--pure_color);
 }
+
+
+/*
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*                          My Projects 
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*/
+.card_but{
+    
+        background-color: var(--color4);
+        color: var(--pure_color);
+        margin-top: 20px;
+        padding:2rem 2rem;
+        position: relative;
+        padding-top:2rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        text-align: center;
+        transition: all .3s ease;
+}
+
+
+.card_but:hover{
+    background-color: var(--border_but_hover);
+    border: 5px solid var(--color1);
+    /*var(--bg_but_hover);*/
+    
+
+}
+
+.card_but a{
+    text-decoration: none;
+    color:lightblue; /*#138961;*/
+    
+}
+
+/*
+Edit card
+*/
+.card_proj{
+    background-color: var(--pure_color);
+    padding:2rem 2rem;
+    position: relative;
+    padding-top:4rem;
+    text-align: center;
+    transition: all .3s ease;
+}
+
+.card_proj img{
+    height:120px;
+    width:120px;
+    border: 5px solid var(--color1);            
+}
+/* Put Image in b/w like a card float on card*/
+.card_proj img{
+    position: absolute; /*  absoute search for relative and by that as 
+    reference it moves so here it uses card 
+    */
+    top:-4.5rem; /*Go up  */
+    left:50%; /* Here image starting is at 50% position now we need to move img by left*/
+    transform: translateX(-50%); /* move by 50%*/ 
+}
+
+.card_proj h2{
+    font-weight: 400;
+    font-size: 1.2rem;
+    margin-bottom:0.5rem;
+    
+}
+.card_proj p{
+    font-family: 'Lato' sans-serif;
+    color: var(--color3_grey);
+    line-height: 1.6rem;
+}
+.card_proj:hover{
+    background-color:var(--darkcolor);
+    border: 5px solid var(--color1);
+    
+
+}
+.card_proj:hover h2{
+    color: var(--pure_color);
+}
+.card_proj:hover p{
+    color: var(--pure_color);
+}
+
+
+
+
+
+
 /*
 *---------------------------- ----------------------------------------------------------------------------------------------------------------
 *                          Footer  END 
