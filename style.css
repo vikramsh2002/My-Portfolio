@@ -330,7 +330,7 @@ section{
     transition: all .8s ease;
 }
 .Qual h1:hover{
-    color:yellow;
+    color: lightskyblue;
     transform: scale(1.2,1.2);
 }
 
@@ -373,25 +373,25 @@ section{
     color:var(--darkcolor);
     cursor: pointer;
     font-size: 50px;
-    color: #FDB813;
+    color: black;
     transition: all 0.8s ease
 }
 .Cert h1:hover{
-    color:var(--color6);
+    color:var(--color1);
     animation: Yo 10s  infinite;
 }
 @keyframes Yo {
     0%{
-        color:#D14009;
+        color:darkblue;
     }
     25%{
-         color: #fc9601;
+         color: dodgerblue;
     }
     50%{
-        color: #FFCC33;
+        color: darkcyan;
     }
     75%{
-        color: #ffe484;
+        color: blue;
     }
     100%{
         color:var(--color6); /* Fade away*/
@@ -412,6 +412,7 @@ section{
 *---------------------------- ----------------------------------------------------------------------------------------------------------------
 */
 .exp{
+
     display: flex;
     flex-direction: column;
     padding: 20px;
@@ -452,14 +453,14 @@ section{
     transition: 0.3s all ease;
 }
 .container .head{
-    color:orangered;
+    color:black;
 }
 .container .head:hover{
     color:var(--color5);
     transform: scale(1.2,1.2);  
 }
 .container .head:hover span{
-    color:springgreen;
+    color: blue;
     transform: scale(1.2,1.2);
 }
 
@@ -541,7 +542,7 @@ section{
 }  
 #c1{
     margin-left: 2rem;
-    background: linear-gradient(to top, #7fff00 50%, yellow 50%);
+    background: linear-gradient(to top, black 50%, lightblue 50%);
     background-size: 100% 200%;
 }
 #c1:hover{
@@ -816,6 +817,8 @@ footer .Fsocl{
 @media (min-width:992px){
     .container{
         max-width:960px;
+
+    }
 }
 @media (min-width:1200px){
     .container{
