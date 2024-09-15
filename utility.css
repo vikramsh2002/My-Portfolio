@@ -36,7 +36,7 @@ Classes for button
 .btn-prim{
     color:var(--darkcolor);
     background-color:var(--color1);
-    margin-left: 3rem;
+    margin-left: 2rem;
 }
 .btn-prim:hover{
     background-color: transparent;

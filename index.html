@@ -22,6 +22,7 @@
 
    <!--Importing JQUERY  -->
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <script src="readmore.js"></script>
    <script>
        $(document).ready(function(){
 let ham=document.querySelector(".ham");
@@ -57,7 +58,7 @@ times.addEventListener('click', function(){
             <div class ="left flex item-center"> <!---It has 2 classes left nd flex-->
                  <!---It also has 2 div 1 for logo 1 for menu-->
                   <div class="logo">         
-                       <img src ="Images/MyLogoLight.png" height=150px width=200px alt="mylogo" />
+                       <img src ="Images/MyLogoLight.png" height=100px width=130px alt="mylogo" />
     
                   </div>
     
@@ -68,7 +69,8 @@ times.addEventListener('click', function(){
                   <a href="#Qualification"> Qualification </a>
                   <a href="#Certificate"> Certifications </a> 
                   <a href="#Experience"> Experience </a>
-                  <a href="#Projects"> Projects</a>   
+                  <a href="#Projects"> Projects</a>
+                  <a href="#Publication"> Publications </a>    
                   </div>
             </div>
             <div class ="right item-center">
@@ -100,12 +102,12 @@ holds an Integrated B.Tech. and MTech. in Computer Science and Engineering with 
     <button class="ham">
           <img src="Images/han.jpg" height=30px ,width=30px, alt="Hamburger Menu Icon"/>
       </button>
-      <img src="">
+      
      <div class="mob-nav">
          <button class="times">
              <img src="Images/times.png" height=30px width=30px>
          </button>
-         <img src ="Images/MyLogoDark.png" height=150px width=200px alt="mylogo" />
+         <img src ="Images/MyLogoDark.png" height=100px width=150px alt="mylogo" />
          <ul>
         <li><a href="#Home"> Home </a>
         <li><a href="#About"> About </a>
@@ -113,7 +115,8 @@ holds an Integrated B.Tech. and MTech. in Computer Science and Engineering with 
         <li><a href="#Qualification"> Qualification </a>
         <li><a href="#Certificate"> Certifications </a> 
         <li><a href="#Experience"> Experience </a>
-         <li> <a href="#Projects"> Projects</a>       
+        <li><a href="#Projects"> Projects</a>
+        <li><a href="#Publication"> Publications </a>        
        </ul>  
     </div>  
     
@@ -616,6 +619,85 @@ holds an Integrated B.Tech. and MTech. in Computer Science and Engineering with 
             </div>
     </div>    
 </section>
+
+<!--****************************** Publications Page ******************************  -->
+
+<section class="publications" id="Publication">
+    <div class="container">
+        <h1 class="secHead"><span>My</span> Publications</h1>
+        <p>Welcome to My Research Hub</p>
+    </div>
+
+    <div class="card-wrapper">
+        <div class="publication-card">
+            <div class="title">Hybrid Approaches for Stocks Prediction and Recommendation System
+            </div>
+            <img src="Images/Publication/edp.png" alt="EDP Science Logo">
+            <div class="details">
+            <span><strong>Authors:</strong> Vikram Sharma, Manik Rakhra and Gauri Mathur</span>
+            <span><strong>Date:</strong> November 2023 </span>
+            <span><strong>Type:</strong> Review Paper </span>
+            </div>
+            
+            <div class="abstract">
+                <span class="short-abstract">
+                    Hybrid approaches to stock prediction and recommendation are a critical area of research for individual investors and financial institutions. Traditional methods have limitations, leading to the emergence of hybrid models. This paper reviews current research on hybrid models, including...
+                </span>
+                <span class="full-abstract" style="display: none;">
+                    Hybrid approaches to stock prediction and recommendation are a critical area of research for individual investors and financial institutions. Traditional methods have limitations, leading to the emergence of hybrid models. This paper reviews current research on hybrid models, including GAN-based, LSTM-based, and neural network-based models, Soft Computing based, GRU based models to provide optimal results, for stock recommendation techniques include sentiment analysis, which uses natural language processing to analyze news articles and social media posts, and network analysis, which examines the relationships between stocks to identify stocks likely to move together. It also discusses evaluation metrics used to assess the performance of these models and then it provides the generalize pipelines that can be kept in mind while researching and developing a recommender engine, it also shows the future direction in order to build the hybrid recommenders as well as predictors, making it a valuable contribution to the stock prediction and recommendation field.
+                </span>
+                <a href="javascript:void(0);" class="read-more-btn">Read More</a>
+            </div>
+            
+            
+            <div class="card_but">
+            <a href="https://www.e3s-conferences.org/articles/e3sconf/abs/2023/90/e3sconf_icsdg2023_01047/e3sconf_icsdg2023_01047.html" target="_blank">View Paper</a>
+            </div>
+        </div>
+
+        <div class="publication-card ">
+            <div class="title">A Review on Classification of Covid-19 and Pneumonia Disease Using Machine Learning</div>
+            <img src="Images/Publication/routledge.png" alt="Taylor & Francis">
+            <div class="details">
+            <span><strong>Authors:</strong> Vikram Sharma, Anurag Anand, Sushant Kumar, Pabitra Kumar Panda, Makul Mahajan</span>
+            <span><strong>Date:</strong> September 2024</span>
+            <span><strong>Type:</strong> Book Chapter(<b>Chapter 88</b>) </span>
+            
+            </div>
+            
+            <div class="abstract">
+                <span class="short-abstract">
+                    Coronavirus is one of the severe diseases spreading over the globe. Due to this, the entire world was shut down
+                    for more than a year, which shows the level of risk it is imposing. The major target of this virus is...
+                </span>
+                <span class="full-abstract" style="display: none;">
+                    Coronavirus is one of the severe diseases spreading over the globe. Due to this, the entire world was shut down
+                    for more than a year, which shows the level of risk it is imposing. The major target of this virus is the lungs, which cause
+                    respiratory issues that further lead to death. It is very important to detect it in its infancy. There is one more such disease
+                    that causes the lungs to malfunction, i.e., Pneumonia, and its types are Viral and Bacterial. This creates a lot of confusion
+                    among the doctors, i.e., It is a coronavirus or pneumonia. To solve this problem, this research paper will help them do the
+                    best prediction using their knowledge and the machine’s knowledge of analysing the X-rays and City scan images and then 
+                    giving the possibilities like 99% Coronavirus, etc. This is done by doing a regression comparative analysis between
+                    different neural network architectures like VGG16, Dense-Net-50, ResNet50, Xception, Squeeze Net, and EffectiveNetB0.
+                </span>
+                <a href="javascript:void(0);" class="read-more-btn">Read More</a>
+            </div>
+
+            <div class="card_but">
+            <a href="https://www.routledge.com/Computer-Science-Engineering-and-Emerging-Technologies-Proceedings-of-ICCS/Sobti-Garg/p/book/9781032521992" target="_blank">View Paper</a>
+            </div>
+            
+        </div>
+        
+        
+    </div>
+      
+
+</section>
+
+
+
+
 
   <!--****************************** Contacts Page ******************************  -->
 <section class="contact" id="con">
