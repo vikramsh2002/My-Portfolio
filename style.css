@@ -16,6 +16,15 @@
     --projcard_bor:#5ced73;    ;
     
 }
+
+
+  
+
+
+
+
+
+
 body{
     height: 600px;
 }
@@ -65,17 +74,17 @@ header{
 header nav .left a{
     color: var(--pure_color);
     text-decoration: None; /* Remove Underline*/
-    margin-right: 15px;
+    margin-right: 12px;
     text-transform: uppercase;
     /* Smooth the Color Change*/
     transition:all .8s ease;
-    font-size: 15px;
+    font-size: 14.5px;
 }
 header nav .left a:hover{
     color: var(--color1);
 }
 header nav{
-    padding: 2rem 0; 
+    padding: 4rem 0; 
 }
 header nav .logo{
     margin-right: 3rem;
@@ -660,6 +669,95 @@ Edit card
 }
 
 
+/*
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*                          Publications
+*---------------------------- ----------------------------------------------------------------------------------------------------------------
+*/
+.publications{
+    border: 0.5px solid black;
+    margin-bottom: 5px;
+    background-color: rgba(61, 207, 211, 0.1);
+    margin: 0px;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),url("Images/Publication/research.png");
+    background-repeat: no-repeat;
+    background-size:contain;
+    background-position: top right;
+    
+}
+.publications .container .secHead{
+    color: var(--color3_grey);
+}
+.publication-card {
+    background-color: var(--lightcolor);
+    border: 1px solid var(--projcard_bor);
+    border-radius: 10px;
+    margin: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    color: var(--darkcolor);
+  }
+  
+  .publication-card:hover {
+    background-color: var(--color6);
+    color: var(--pure_color);
+    border: 2px solid var(--color1);
+    box-shadow: 0 0 20px var(--color3_grey);
+  }
+  
+  .publication-card .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color4);
+    margin-bottom: 10px;
+  }
+  
+  .publication-card .details {
+    font-size: 0.9rem;
+    color: var(--color3_grey);
+    margin-bottom: 15px;
+  }
+  
+  .publication-card .details span {
+    display: block;
+  }
+  
+  .publication-card .abstract {
+    font-size: 1rem;
+    color: var(--color4);
+    margin-bottom: 10px;
+  }
+
+.publication-card img{
+    width: 100px;
+    height: 50px;
+    
+}
+  
+  
+  .publication-card .buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  .publication-card .button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--pure_color);
+    background-color: var(--color5);
+    transition: background-color 0.3s ease;
+  }
+  
+  .publication-card .button:hover {
+    background-color: var(--border_but_hover);
+  }
+  
+
+
 
 
 
@@ -739,6 +837,8 @@ footer .Fsocl{
     
      Go to Left Side */
      transition: all .8s ease-in-out;
+     overflow-y: auto;
+     overflow-x: hidden ;
 }
 .times{
     position:fixed;
@@ -756,7 +856,7 @@ footer .Fsocl{
 .mob-nav ul a{
     text-decoration: none;
     color: var(--darkcolor);
-    font-size: 3rem;
+    font-size: 2rem;
 }
 
 .open{
