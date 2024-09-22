@@ -39,6 +39,11 @@ html{
     /*  Smothing the Fonts*/
     -webkit-font-smoothing: antialiased;
 }
+html, body {
+    height: 100%;  /* Ensure the entire height is taken by html and body */
+    margin: 0;     /* Remove default margins */
+    padding: 0;
+}
 
 body{
     font-family: 'Poppins',sans-serif;
@@ -64,6 +69,7 @@ header{
      Perfect Triangle */ 
      clip-path: polygon(0 0,100% 0, 96% 100%, 60% 90%, 0 100%); 
      margin-top:0px auto; 
+
 }
 .container{
     max-width:1152px;
@@ -486,7 +492,7 @@ section{
 
 .row{
     display: flex;
-    margin-left: 20%;
+    margin-left: 10%;
     margin-bottom: 2rem;
     
 }
@@ -780,7 +786,7 @@ footer img{
     top:20px;
 }
 footer .Fsocl{
-    margin-left:500px;
+    margin-left:30%;
     margin-bottom:2rem;
 }
 
@@ -810,127 +816,458 @@ footer .Fsocl{
 *---------------------------- ----------------------------------------------------------------------------------------------------------------
 */
 
-.site-main-wrapper{
-   position:relative;
-   
+
+
+
+.site-main-wrapper {
+    position: relative;
+    min-height: 100vh; /* Make sure the wrapper takes the full height of the viewport */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Spread out content, footer at the bottom */
 }
-.ham{
-    position:absolute;
-    top:50px;
-     right:30px;
-    z-index: 11; /* Bring Forward*/
+
+.ham {
+    position: absolute;
+    top: 50px;
+    right: 30px;
+    z-index: 11;
     background: none;
     border: none;
-    outline:none;
-    cursor:pointer;
+    outline: none;
+    cursor: pointer;
 }
-.mob-nav{
-    position:fixed;
-    top:0;
-    left:0;
+
+.mob-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
     z-index: 1001;
     background-color: var(--lightcolor);
     width: 100%;
-    height:100%;
-    padding:40px;
-    transform: translateX(-100%); /*Move on X -axis
-    
-     Go to Left Side */
-     transition: all .8s ease-in-out;
-     overflow-y: auto;
-     overflow-x: hidden ;
+    height: 100%;
+    padding: 40px;
+    transform: translateX(-100%);
+    transition: all 0.8s ease-in-out;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
-.times{
-    position:fixed;
-    top:20px;
-    right:30px;
-    background:none;
+
+.times {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    background: none;
     border: none;
-    outline:none;
-    cursor:pointer;
+    outline: none;
+    cursor: pointer;
 }
-.mob-nav ul{
+
+.mob-nav ul {
     list-style-type: none;
-    
 }
-.mob-nav ul a{
+
+.mob-nav ul a {
     text-decoration: none;
     color: var(--darkcolor);
     font-size: 2rem;
 }
 
-.open{
-    transform:translateX(0);
+.open {
+    transform: translateX(0);
 }
 
-/**
+/* Media Queries */
+@media (max-width: 1200px) {
+    .container {
+        max-width: 95%; /* Allow for some margin on larger screens */
+        padding: 15px; /* Adjust padding */
+    }
 
-    PAD pro
-*/
+    .card, .card_proj, .publication-card {
+        padding-top: 50px; /* Consistent padding */
+        margin-bottom: 35px; /* Margin adjustment for larger screens */
+    }
 
-@media (max-width:1024px)
-{
-  header #main-nav{
-      display:none;
+    .box {
+        padding: 12px; /* Slightly increase padding */
+        margin-bottom: 35px; /* Adjust margin */
+    }
 
-  }
-  .left img{
-      width: 260px;
+    .card-wrapper {
+        grid-template-columns: repeat(3, 1fr); /* Two-column layout */
+        gap: 25px; /* Space between items */
+        row-gap: 70px; /* Increased row gap */
+    }
 
-  } 
-  .abimg{
-      width:260px;
-  }
-  .box .head{
-      font-size:  0.8rem;
-  }
-  .box p{
-      font-size: 0.5rem;
-      
-  }
-  .expcert img{
-      width:250px;
-      height: 250px;
-  }
-  .box{
-      width:300px;
-      height: 300px;
-      margin-left: 0px;
-  }
-  .card-wrapper{
-      grid-template-columns: repeat(2,1fr);
-  }
-  
+    .exp {
+        background-size: cover; /* Ensure background covers the area */
+        background-position: center; /* Center background */
+        min-height: 100vh; /* Ensure it covers the viewport */
+    }
+    .row {
+        margin-left: 10%;
+    }
+
+    .expcert img {
+        width: 350px;
+        height: auto;
+    }
+
+    .exp .container {
+        margin-bottom: 30px; /* Ensure spacing */
+    }
+
+    .Cert .container {
+        margin-bottom: 30px; /* Ensure spacing */
+    }
+
+    footer {
+        width: 100%; /* Full width for footer */
+        padding: 2rem; /* Padding adjustment */
+        box-sizing: border-box; /* Include padding in width calculations */
+    }
+
+    footer img {
+        width: 250px; /* Adjust image size for footer */
+        height: auto; /* Maintain aspect ratio */
+    }
+
+    footer .Fsocl {
+        display: flex; /* Flex layout for social icons */
+        justify-content: center; /* Center icons */
+        gap: 15px; /* Space between icons */
+        margin-left: 8%;
+    }
 }
 
-
-/*  Iphones*/
-
-@media (min-width:576px){
-    .container{
-        max-width: 540px;
-      /* 
-      *  If My Width is lesser than 570 then
-      * contianer cam be max 540
-      **/
-    } 
+/* For larger tablets and small desktops (max-width: 1024px)  : Working*/
+@media (max-width: 1024px) { 
+    .container { 
+        max-width: 90%;
+        padding: 20px;
+    }
     
+    .card, .card_proj, .publication-card {
+        padding-top: 50px;
+        margin-bottom: 40px;
+    }
+    
+    .box {
+        padding: 15px;
+        margin-bottom: 40px;
+    }
+    
+    .card-wrapper {
+        grid-template-columns: repeat(2, 1fr); /* 2-column layout */
+        gap: 30px;
+        row-gap: 50px;
+    }
+    
+    .exp {
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        min-height: 100vh;
+    }
+    
+    .exp .container {
+        margin-bottom: 40px;
+    }
 
-}
-@media (min-width:768px){
-    .container{
-        max-width: 720px;
+    .row {
+        margin-left: 1%;
+    }
+
+    .expcert img {
+        width: 300px;
+        height: auto;
+    }
+
+    .exp .row .flex {
+        flex-direction: row; /* Keep default row for large screens */
+    }
+    
+    .Cert .container {
+        margin-bottom: 40px;
+    }
+
+    
+    footer {
+        width: 110%; /* Ensure footer takes full width */
+        padding: 8rem; /* Adjust padding for smaller screens */
+        box-sizing: border-box; /* Include padding in width calculations */
+        padding-top: 3rem;
 
     }
+
+    footer img {
+        width: 300px; /* Adjust image size in footer for this resolution */
+        height: auto; /* Maintain aspect ratio */
+        margin-left: 2%; /* Adjust positioning */
+    }
+
+    footer .Fsocl {
+        margin-left: 20%; /* Adjust social icons or other content as needed */
+    }
 }
-@media (min-width:992px){
-    .container{
-        max-width:960px;
+
+
+@media (max-width: 768px) { /*Working fine on this */
+    .container {
+        max-width: 100%;
+        padding: 15px;
+    }
+    .card, .card_proj, .publication-card {
+        padding-top: 60px;
+        margin-bottom: 30px; /* Add extra space on smaller screens */
+    }
+    .box{
+        padding: 10px;
+        margin-bottom: 30px; /* Add extra space on smaller screens */
+    }
+
+    .card-wrapper {
+        grid-template-columns: 1fr; /* Single column for small screens */
+        gap: 30px;
+        row-gap: 100px; /* Increase gap between rows */
+    }
+
+    /* Experience Section Adjustments */
+    .exp{
+    background-size: cover; /* Ensure the gradient covers the entire area */
+    background-attachment: fixed; /* Keeps the background fixed while scrolling */
+    background-position: center; /* Center the background */
+    min-height: 100vh; /* Ensures it covers the entire viewport height */
+    margin: 0; /* Remove any default margins */
+    padding: 0; /* Remove padding */
+    }
+    .exp .container {
+        margin-bottom: 30px; /* Ensure spacing */
+    }
+    
+    .exp .row .flex{
+        flex-direction: column-reverse;
+    }
+
+    /* Certification Section Adjustments */
+    .Cert .container {
+        margin-bottom: 30px; /* Ensure spacing */
+    }
+    footer {
+        width: 105%; /* Ensure footer takes full width */
+        padding: 20rem; /* Adjust padding for smaller screens */
+        box-sizing: border-box; /* Include padding in width calculations */
+        padding-top: 1rem; /* Adjust padding for smaller screens */
+    }
+    footer img {
+        width: 200px; /* Adjust footer image size */
+        height: auto; /* Maintain aspect ratio */
+        top: 5px;
+        margin-left: 5%;
+    }
+    footer .Fsocl{
+        margin-left: 0.2%;
+    }
+    
+}
+
+@media (max-width: 576px) {
+    .MyIntro{
+        display: flex;
+        flex-direction: column-reverse;
+        flex-wrap: wrap;
+    }
+    #main-nav{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+    #navigation_bar{
+        display: none;
+    }
+    .about_response{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .AData{
+        text-align: justify; /* Justify the text */
+        overflow-wrap: break-word; /* Ensure long words break to fit */
+       
+    }
+    .AData h1 {
+        font-size: 1.5rem; /* Smaller size for mobile */
+    }
+    .AData h3 {
+        font-size: 1.2rem; /* Smaller size for mobile */
+    }
+    .AData p {
+        font-size: 0.9rem; /* Smaller size for mobile */
+        padding: 0 10px; /* Less padding for smaller screens */
+    }
+
+
+
+    .container {
+        max-width: 100%;
+        padding: 10px; /* Adjust padding for smaller screens */
+    }
+    
+    .card, .card_proj, .publication-card {
+        padding-top: 50px; /* Consistent padding */
+        margin-bottom: 25px; /* Reduce margin for smaller screens */
+    }
+
+    .box {
+        padding: 8px; /* Adjust padding for boxes */
+        margin-bottom: 20px; /* Reduce bottom margin */
+        font-size: 0.8rem;
+        width: fit-content;
+        height: 400px;
 
     }
-}
-@media (min-width:1200px){
-    .container{
-        max-width: 1152px;
+
+    .card-wrapper {
+        grid-template-columns: 1fr; /* Single column layout */
+        gap: 20px; /* Adjust gap for smaller screens */
+        row-gap: 70px; /* Increase row gap */
+    }
+
+    .exp {
+        background-size: cover; /* Ensure gradient covers the area */
+        background-attachment: scroll; /* Adjust for performance */
+        background-position: center;
+        min-height: 100vh; /* Ensures it covers the viewport */
+    }
+
+    .exp .container {
+        margin-bottom: 20px; /* Ensure spacing */
+    }
+
+    .exp .row .flex {
+        flex-direction: column-reverse; /* Stack elements for smaller screens */
+    }
+
+    .Cert .container {
+        margin-bottom: 20px; /* Ensure spacing */
+    }
+
+    footer {
+        width: 100%; /* Full width for footer */
+        padding: 1rem; /* Adjust padding */
+        box-sizing: border-box; /* Include padding in width calculations */
+    }
+
+    footer img {
+        width: 100px; /* Adjust image size for footer */
+        height: auto; /* Maintain aspect ratio */
+        margin-left: 0; /* Center the footer image */
+    }
+
+    .social {
+        display: grid; /* Grid for social icons */
+        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); /* Responsive grid */
+        gap: 10px; /* Space between icons */
     }
 }
+
+
+
+/* Previous media queries here... */
+
+@media (max-width: 350px) {
+    .MyIntro{
+        display: flex;
+        flex-direction: column-reverse;
+        flex-wrap: wrap;
+    }
+    #main-nav{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+    #navigation_bar{
+        display: none;
+    }
+    .about_response{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .AData{
+        text-align: justify; /* Justify the text */
+        overflow-wrap: break-word; /* Ensure long words break to fit */
+       
+    }
+    .AData h1 {
+        font-size: 1.5rem; /* Smaller size for mobile */
+    }
+    .AData h3 {
+        font-size: 1.2rem; /* Smaller size for mobile */
+    }
+    .AData p {
+        font-size: 0.9rem; /* Smaller size for mobile */
+        padding: 0 10px; /* Less padding for smaller screens */
+    }
+
+
+    .container {
+        max-width: 100%;
+        padding: 5px;
+    }
+    .card, .card_proj, .publication-card {
+        padding-top: 60px;
+        margin-bottom: 35px;
+    }
+    .box {
+        padding: 5px;
+        margin-bottom: 15px;
+        font-size: 0.7rem;
+        width: fit-content;
+        height: 400px;
+    }
+    .card-wrapper {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        row-gap: 60px;
+    }
+    .exp {
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        min-height: 100vh;
+    }
+    .exp .container {
+        margin-bottom: 15px;
+    }
+    .exp .row .flex {
+        flex-direction: column-reverse;
+    }
+    .Cert .container {
+        margin-bottom: 15px;
+    }
+    footer {
+        width: 100%;
+        padding: 0.8rem;
+        box-sizing: border-box;
+    }
+    footer img {
+        width: 120px;
+        margin-left: 4%;
+    }
+    .social {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    }
+}
+
+ 
+
+
