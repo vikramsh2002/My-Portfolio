@@ -22,6 +22,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node
+        id: setup_node
+        continue-on-error: true
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -31,18 +33,37 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Install dependencies
+      - name: Try building Portfolio V2
+        id: build_v2
+        continue-on-error: true
         working-directory: portfolio-v2
-        run: npm ci
+        run: |
+          npm ci
+          npm run build
 
-      - name: Build Portfolio V2
-        working-directory: portfolio-v2
-        run: npm run build
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p _site
+
+          if [ "${{ steps.build_v2.outcome }}" = "success" ] && [ -d "portfolio-v2/dist" ]; then
+            cp -R portfolio-v2/dist/. _site/
+            echo "Deploying Portfolio V2 build." >> "$GITHUB_STEP_SUMMARY"
+          else
+            rsync -av \
+              --exclude ".git" \
+              --exclude ".github" \
+              --exclude "_site" \
+              --exclude "portfolio-v2" \
+              ./ _site/
+            echo "Portfolio V2 build failed, so deploying the old root static portfolio fallback." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          touch _site/.nojekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: portfolio-v2/dist
+          path: _site
 
   deploy:
     environment:
