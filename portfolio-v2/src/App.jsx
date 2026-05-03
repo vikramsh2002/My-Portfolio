@@ -84,7 +84,7 @@ function App() {
 
             <div className="hero-panel" aria-label="Portfolio focus">
               <div className="portrait-frame">
-                <img src={asset("images/formal.png")} alt="Vikram Sharma" />
+                <img src={asset("images/Dp.png")} alt="Vikram Sharma" />
               </div>
               <div className="focus-list">
                 {profile.focus.map((item) => (

@@ -241,8 +241,10 @@ a {
 }
 
 .portrait-frame {
-  aspect-ratio: 4 / 5;
-  background: #20262b;
+  aspect-ratio: 1;
+  background:
+    linear-gradient(145deg, rgba(54, 200, 210, 0.12), rgba(229, 107, 93, 0.12)),
+    #20262b;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -250,7 +252,7 @@ a {
 .portrait-frame img {
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center;
   width: 100%;
 }
 
@@ -444,7 +446,7 @@ a {
 .project-card {
   box-shadow: 0 18px 40px rgba(16, 17, 20, 0.08);
   display: grid;
-  grid-template-columns: 170px minmax(0, 1fr);
+  grid-template-columns: minmax(210px, 0.42fr) minmax(0, 1fr);
   min-height: 100%;
   overflow: hidden;
 }
@@ -454,13 +456,21 @@ a {
 }
 
 .project-image {
-  background: #ece8df;
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgba(54, 200, 210, 0.12), rgba(117, 200, 118, 0.08)),
+    #f4f2ec;
+  border-right: 1px solid var(--line);
+  display: flex;
+  justify-content: center;
   min-height: 220px;
+  padding: 14px;
 }
 
 .project-image img {
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   width: 100%;
 }
 
@@ -706,11 +716,7 @@ a {
   }
 
   .portrait-frame {
-    aspect-ratio: 16 / 11;
-  }
-
-  .portrait-frame img {
-    object-fit: contain;
+    aspect-ratio: 1;
   }
 
   .timeline-item,
@@ -726,6 +732,8 @@ a {
 
   .project-image {
     aspect-ratio: 16 / 10;
+    border-bottom: 1px solid var(--line);
+    border-right: 0;
     min-height: 0;
   }
 

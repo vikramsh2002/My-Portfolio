@@ -5,6 +5,7 @@ dist
 
 public/images/**
 !public/images/
+!public/images/Dp.png
 !public/images/MyLogoDark.png
 !public/images/formal.png
 !public/images/Experience/
