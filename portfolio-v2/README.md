@@ -2,7 +2,11 @@
 
 Modern Vite React rebuild of Vikram Sharma's portfolio.
 
-The current root portfolio remains untouched while this version is reviewed.
+The current root portfolio remains untouched as a fallback while this version is reviewed and deployed through GitHub Pages.
+
+## Documentation
+
+- [Architecture and UI evolution](docs/architecture.md)
 
 ## Commands
 
