@@ -60,11 +60,15 @@ jobs:
             exit 1
           fi
 
-      - name: Export current projects for model context
+      - name: Prepare prompt context
+        id: prompt_context
         env:
-          CURRENT_PROJECTS_FILE: ${{ runner.temp }}/current-projects.json
+          LINKEDIN_UPDATE_TEXT: ${{ env.UPDATE_TEXT }}
         run: |
-          cp portfolio-v2/src/projects.json "$CURRENT_PROJECTS_FILE"
+          PROJECTS_JSON="$(node -e "const fs = require('node:fs'); const projects = JSON.parse(fs.readFileSync('portfolio-v2/src/projects.json', 'utf8')); process.stdout.write(JSON.stringify(projects));")"
+          UPDATE_JSON="$(node -e "process.stdout.write(JSON.stringify(process.env.LINKEDIN_UPDATE_TEXT || ''));")"
+          echo "current_projects=$PROJECTS_JSON" >> "$GITHUB_OUTPUT"
+          echo "linkedin_update_json=$UPDATE_JSON" >> "$GITHUB_OUTPUT"
 
       - name: Extract project update with GitHub Models
         id: inference
@@ -73,10 +77,10 @@ jobs:
           prompt-file: .github/prompts/portfolio-project-sync.prompt.yml
           input: |
             model: ${{ env.MODEL_ID }}
-            linkedin_update: |
-              ${{ env.UPDATE_TEXT }}
-          file_input: |
-            current_projects: ${{ runner.temp }}/current-projects.json
+            current_projects: |-
+              ${{ steps.prompt_context.outputs.current_projects }}
+            linkedin_update_json: |-
+              ${{ steps.prompt_context.outputs.linkedin_update_json }}
 
       - name: Apply model response to portfolio data
         id: apply

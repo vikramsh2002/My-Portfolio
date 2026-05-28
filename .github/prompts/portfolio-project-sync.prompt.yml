@@ -16,11 +16,11 @@ messages:
       - Use featured false for newly added projects unless the update explicitly says it should be featured.
   - role: user
     content: |-
-      Current portfolio projects:
+      Current portfolio projects JSON:
       {{current_projects}}
 
-      New LinkedIn/profile update text:
-      {{linkedin_update}}
+      New LinkedIn/profile update text JSON string:
+      {{linkedin_update_json}}
 
       Convert the update into a portfolio project change.
 model: "{{model}}"
