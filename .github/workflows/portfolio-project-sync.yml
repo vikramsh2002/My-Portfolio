@@ -29,6 +29,7 @@ permissions:
   pull-requests: write
   models: read
   issues: write
+  actions: write
 
 concurrency:
   group: portfolio-project-sync
@@ -133,7 +134,27 @@ jobs:
             --body-file portfolio-v2/portfolio-sync-summary.md)"
 
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
+          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
           echo "Created PR: $PR_URL" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Trigger CI for generated PR
+        if: steps.pr.outputs.pr_url != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: ${{ steps.pr.outputs.branch_name }}
+        run: |
+          DISPATCH_PAYLOAD="$RUNNER_TEMP/portfolio-v2-ci-dispatch.json"
+          printf '{"ref":"%s"}' "$BRANCH_NAME" > "$DISPATCH_PAYLOAD"
+
+          curl --fail --silent --show-error \
+            --request POST \
+            --url "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/workflows/portfolio-v2-ci.yml/dispatches" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            --data @"$DISPATCH_PAYLOAD"
+
+          echo "Triggered Portfolio V2 CI for $BRANCH_NAME." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Ask for review on blocked update
         id: review_issue
