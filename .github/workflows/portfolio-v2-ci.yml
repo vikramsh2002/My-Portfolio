@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   build:
+    name: Portfolio V2 CI
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
