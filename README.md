@@ -20,13 +20,13 @@ GitHub Models project sync workflow: [portfolio-v2/docs/portfolio-sync.md](portf
 
 ```mermaid
 flowchart TD
-    A["Old root portfolio<br/>index.html + style.css + readmore.js"] --> B["Fallback static site"]
-    C["portfolio-v2<br/>Vite + React"] --> D["Structured content data"]
+    A["Old root portfolio"] --> B["Fallback static site"]
+    C["Portfolio V2 app"] --> D["Structured content data"]
     D --> E["React components"]
-    E --> F["Vite build: dist/"]
-    G["GitHub Actions"] --> H{"V2 build succeeds?"}
-    H -- "Yes" --> F
-    H -- "No" --> B
+    E --> F["Vite build output"]
+    G["GitHub Actions"] --> H{"V2 build succeeds"}
+    H -->|Yes| F
+    H -->|No| B
     F --> I["GitHub Pages"]
     B --> I
     I --> J["Public portfolio URL"]
@@ -43,17 +43,17 @@ This repository uses three safety layers:
 ```mermaid
 flowchart TD
     A["Feature branch or generated project PR"] --> B["Portfolio V2 CI"]
-    B --> C{"Build passes?"}
-    C -- "No" --> D["Fix before merge"]
-    C -- "Yes" --> E["Optional manual preview deploy"]
-    E --> F["Build with VITE_BASE=/My-Portfolio-Preview/"]
-    F --> G["Push dist only to My-Portfolio-Preview"]
-    G --> H["Preview URL"]
-    H --> I{"Looks good?"}
-    I -- "No" --> D
-    I -- "Yes" --> J["Merge to main"]
+    B --> C{"Build passes"}
+    C -->|No| D["Fix before merge"]
+    C -->|Yes| E["Optional manual preview deploy"]
+    E --> F["Build with preview base path"]
+    F --> G["Push dist to preview repo"]
+    G --> H["Preview Pages URL"]
+    H --> I{"Looks good"}
+    I -->|No| D
+    I -->|Yes| J["Merge to main"]
     J --> K["Live GitHub Pages deploy"]
-    K --> L["https://vikramsh2002.github.io/My-Portfolio/"]
+    K --> L["Live portfolio URL"]
 ```
 
 ## Preview Strategy
