@@ -49,9 +49,12 @@ The workflow:
 - Applies an add/update to the project list.
 - Runs the Vite build.
 - Opens a pull request with a summary when the update is safe enough for review.
+- Dispatches `Portfolio V2 CI` for the generated PR branch so required checks run for bot-created PRs.
 - Optionally enables auto-merge for low-risk updates after the build passes.
 - Creates a GitHub issue when the update is high-risk, unclear, missing a usable project image, or the build fails.
 - Sends a review email when email secrets are configured.
+
+The explicit CI dispatch is required because GitHub does not run normal `pull_request` workflows for events created with the repository `GITHUB_TOKEN`. `workflow_dispatch` is allowed from `GITHUB_TOKEN`, so the generated PR still gets a required build check without needing a personal access token.
 
 ## Model Configuration
 

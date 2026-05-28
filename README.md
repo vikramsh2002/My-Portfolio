@@ -40,9 +40,13 @@ This repository uses three safety layers:
 - `Deploy Portfolio Preview`: manually builds a branch and publishes only the static `dist/` output to a separate preview repository.
 - `Deploy Portfolio V2 to GitHub Pages`: deploys the live site only from `main`.
 
+Generated portfolio sync PRs are created by `github-actions[bot]`. Because GitHub does not fire normal `pull_request` workflows from `GITHUB_TOKEN`-created events, the sync workflow explicitly dispatches `Portfolio V2 CI` for the generated branch after it opens the PR.
+
 ```mermaid
 flowchart TD
-    A["Feature branch or generated project PR"] --> B["Portfolio V2 CI"]
+    A["Feature branch"] --> B["Portfolio V2 CI"]
+    M["Generated project PR"] --> N["Sync workflow dispatches CI"]
+    N --> B
     B --> C{"Build passes"}
     C -->|No| D["Fix before merge"]
     C -->|Yes| E["Optional manual preview deploy"]
