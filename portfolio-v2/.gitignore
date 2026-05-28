@@ -2,6 +2,12 @@ node_modules
 dist
 .vite
 .DS_Store
+chrome-cdp-profile/
+portfolio-sync-summary.md
+portfolio-sync-review.md
+portfolio-*-output.png
+portfolio-*-card.png
+vite-dev*.log
 
 public/images/**
 !public/images/
@@ -12,6 +18,10 @@ public/images/**
 !public/images/Experience/sde_intern_philips.png
 !public/images/Experience/sparks.jfif
 !public/images/Projects/
+!public/images/Projects/*.png
+!public/images/Projects/*.jpg
+!public/images/Projects/*.jpeg
+!public/images/Projects/*.webp
 !public/images/Projects/AMS.png
 !public/images/Projects/Course.png
 !public/images/Projects/Crop.png

@@ -1,0 +1,93 @@
+messages:
+  - role: system
+    content: |-
+      You extract portfolio project updates from a LinkedIn/profile update for Vikram Sharma.
+      Return only structured JSON that matches the schema. Do not include markdown.
+
+      Rules:
+      - Prefer updating an existing project when the update clearly refers to one.
+      - Add a new project only when the update describes a distinct project not already present.
+      - Keep the writing concise, resume-ready, and truthful.
+      - Preserve source/live/demo links when present in the update.
+      - Mark risk high if the update asks to change layout, dependencies, secrets, workflow files, or anything outside project content.
+      - Mark needs_review when the update is too vague, promotional, or missing enough project details.
+      - For new projects, use empty string for image so the workflow can capture the live/demo site thumbnail.
+      - For existing project updates, preserve or reuse the existing image only when it still clearly fits.
+      - Use featured false for newly added projects unless the update explicitly says it should be featured.
+  - role: user
+    content: |-
+      Current portfolio projects:
+      {{current_projects}}
+
+      New LinkedIn/profile update text:
+      {{linkedin_update}}
+
+      Convert the update into a portfolio project change.
+model: "{{model}}"
+modelParameters:
+  temperature: 0.1
+  maxCompletionTokens: 1800
+responseFormat: json_schema
+jsonSchema: |-
+  {
+    "name": "portfolio_project_change",
+    "strict": true,
+    "schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "intent": {
+          "type": "string",
+          "enum": ["add_project", "update_project", "ignore", "needs_review"]
+        },
+        "risk": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "matchTitle": {
+          "type": "string",
+          "description": "Existing project title to update, or empty string."
+        },
+        "reason": {
+          "type": "string"
+        },
+        "project": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": { "type": "string" },
+            "subtitle": { "type": "string" },
+            "image": { "type": "string" },
+            "description": { "type": "string" },
+            "impact": { "type": "string" },
+            "tags": {
+              "type": "array",
+              "items": { "type": "string" },
+              "maxItems": 8
+            },
+            "featured": { "type": "boolean" },
+            "links": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "label": { "type": "string" },
+                  "href": { "type": "string" }
+                },
+                "required": ["label", "href"]
+              },
+              "maxItems": 5
+            }
+          },
+          "required": ["title", "subtitle", "image", "description", "impact", "tags", "featured", "links"]
+        },
+        "reviewNotes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "maxItems": 6
+        }
+      },
+      "required": ["intent", "risk", "matchTitle", "reason", "project", "reviewNotes"]
+    }
+  }

@@ -27,6 +27,7 @@ import {
 
 const asset = (path) => `${import.meta.env.BASE_URL}${path}`;
 const resumeHref = asset("resume/Vikram_Sharma_Python_Backend_Engineer.pdf");
+const defaultProjectImage = "images/Projects/headlines.png";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -320,10 +321,12 @@ function SectionHeading({ icon, kicker, title, text }) {
 }
 
 function ProjectCard({ project, featured = false }) {
+  const projectImage = project.image || defaultProjectImage;
+
   return (
     <article className={featured ? "project-card featured" : "project-card"}>
       <div className="project-image">
-        <img src={asset(project.image)} alt={`${project.title} preview`} loading="lazy" />
+        <img src={asset(projectImage)} alt={`${project.title} preview`} loading="lazy" />
       </div>
       <div className="project-body">
         <p className="project-subtitle">{project.subtitle}</p>

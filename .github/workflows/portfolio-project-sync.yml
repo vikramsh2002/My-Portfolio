@@ -1,0 +1,227 @@
+name: Sync Portfolio Project with GitHub Models
+
+on:
+  workflow_dispatch:
+    inputs:
+      linkedin_update:
+        description: "Paste the LinkedIn/profile project update text. Include URLs if available."
+        required: true
+        type: string
+      model:
+        description: "GitHub Models model id."
+        required: true
+        default: "openai/gpt-4o"
+        type: string
+      auto_merge:
+        description: "Auto-merge low-risk PRs after the build passes."
+        required: true
+        default: false
+        type: boolean
+      card_image_url:
+        description: "Optional image URL to use for the project card when no live site screenshot is available."
+        required: false
+        type: string
+  repository_dispatch:
+    types: [linkedin_project_update]
+
+permissions:
+  contents: write
+  pull-requests: write
+  models: read
+  issues: write
+
+concurrency:
+  group: portfolio-project-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      UPDATE_TEXT: ${{ github.event.client_payload.linkedin_update || github.event.inputs.linkedin_update }}
+      MODEL_ID: ${{ github.event.client_payload.model || github.event.inputs.model || 'openai/gpt-4o' }}
+      AUTO_MERGE: ${{ github.event.client_payload.auto_merge || github.event.inputs.auto_merge || 'false' }}
+      CARD_IMAGE_URL: ${{ github.event.client_payload.card_image_url || github.event.inputs.card_image_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: portfolio-v2/package-lock.json
+
+      - name: Validate update text
+        run: |
+          if [ -z "$UPDATE_TEXT" ]; then
+            echo "No LinkedIn/profile update text was provided." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Export current projects for model context
+        env:
+          CURRENT_PROJECTS_FILE: ${{ runner.temp }}/current-projects.json
+        run: |
+          cp portfolio-v2/src/projects.json "$CURRENT_PROJECTS_FILE"
+
+      - name: Extract project update with GitHub Models
+        id: inference
+        uses: actions/ai-inference@v1
+        with:
+          prompt-file: .github/prompts/portfolio-project-sync.prompt.yml
+          input: |
+            model: ${{ env.MODEL_ID }}
+            linkedin_update: |
+              ${{ env.UPDATE_TEXT }}
+          file_input: |
+            current_projects: ${{ runner.temp }}/current-projects.json
+
+      - name: Apply model response to portfolio data
+        id: apply
+        continue-on-error: true
+        env:
+          CARD_IMAGE_URL: ${{ env.CARD_IMAGE_URL }}
+        run: |
+          node portfolio-v2/scripts/prepareProjectThumbnail.mjs "${{ steps.inference.outputs.response-file }}"
+          node portfolio-v2/scripts/applyPortfolioProjectUpdate.mjs "${{ steps.inference.outputs.response-file }}"
+
+      - name: Build portfolio
+        id: build
+        if: steps.apply.outcome == 'success'
+        continue-on-error: true
+        working-directory: portfolio-v2
+        run: |
+          npm ci
+          npm run build
+
+      - name: Check for portfolio changes
+        id: diff
+        if: always()
+        run: |
+          if git diff --quiet -- portfolio-v2/src/projects.json portfolio-v2/public/images/Projects; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No portfolio data changes were produced." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            cat portfolio-v2/portfolio-sync-summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Create pull request
+        id: pr
+        if: steps.diff.outputs.changed == 'true' && steps.apply.outcome == 'success' && steps.build.outcome == 'success' && steps.apply.outputs.risk != 'high' && steps.apply.outputs.intent != 'needs_review' && steps.apply.outputs.action != 'needs_review' && steps.apply.outputs.image_status != 'missing' && steps.apply.outputs.image_status != 'failed'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: portfolio-sync/${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH_NAME"
+          git add portfolio-v2/src/projects.json portfolio-v2/public/images/Projects
+          git commit -m "Update portfolio project from profile sync"
+          git push --set-upstream origin "$BRANCH_NAME"
+
+          PR_URL="$(gh pr create \
+            --base main \
+            --head "$BRANCH_NAME" \
+            --title "Update portfolio project from profile sync" \
+            --body-file portfolio-v2/portfolio-sync-summary.md)"
+
+          echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
+          echo "Created PR: $PR_URL" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Ask for review on blocked update
+        id: review_issue
+        if: always() && (steps.apply.outcome == 'failure' || steps.build.outcome == 'failure' || steps.apply.outputs.risk == 'high' || steps.apply.outputs.intent == 'needs_review' || steps.apply.outputs.action == 'needs_review' || steps.apply.outputs.image_status == 'missing' || steps.apply.outputs.image_status == 'failed')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REVIEW_FILE="portfolio-v2/portfolio-sync-review.md"
+          {
+            echo "# Portfolio Sync Needs Review"
+            echo
+            echo "- Apply status: ${{ steps.apply.outcome }}"
+            echo "- Build status: ${{ steps.build.outcome }}"
+            echo "- Risk: ${{ steps.apply.outputs.risk }}"
+            echo "- Intent: ${{ steps.apply.outputs.intent }}"
+            echo "- Action: ${{ steps.apply.outputs.action }}"
+            echo "- Image status: ${{ steps.apply.outputs.image_status }}"
+            echo "- Image path: ${{ steps.apply.outputs.image_path }}"
+            echo "- Image source: ${{ steps.apply.outputs.image_source }}"
+            echo "- Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            if [ "${{ steps.apply.outputs.image_status }}" = "missing" ] || [ "${{ steps.apply.outputs.image_status }}" = "failed" ]; then
+              echo "Please rerun the workflow with a card_image_url or add a project screenshot manually."
+              echo
+            fi
+            if [ -f "portfolio-v2/portfolio-sync-summary.md" ]; then
+              cat portfolio-v2/portfolio-sync-summary.md
+            else
+              echo "The sync did not produce a summary file."
+            fi
+          } > "$REVIEW_FILE"
+
+          ISSUE_URL="$(gh issue create \
+            --title "Portfolio sync needs review" \
+            --body-file "$REVIEW_FILE")"
+
+          echo "issue_url=$ISSUE_URL" >> "$GITHUB_OUTPUT"
+          echo "Created review issue: $ISSUE_URL" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Send review email
+        if: always() && steps.review_issue.outputs.issue_url != ''
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERT_EMAIL: ${{ secrets.PORTFOLIO_ALERT_EMAIL }}
+          ALERT_FROM: ${{ secrets.PORTFOLIO_ALERT_FROM }}
+          ISSUE_URL: ${{ steps.review_issue.outputs.issue_url }}
+        run: |
+          if [ -z "$RESEND_API_KEY" ] || [ -z "$ALERT_EMAIL" ]; then
+            echo "Review email skipped because RESEND_API_KEY or PORTFOLIO_ALERT_EMAIL is not configured." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          FROM_ADDRESS="${ALERT_FROM:-Portfolio Sync <onboarding@resend.dev>}"
+          PAYLOAD_FILE="$RUNNER_TEMP/portfolio-sync-email.json"
+          export FROM_ADDRESS
+          export PAYLOAD_FILE
+
+          node -e "
+            const fs = require('node:fs');
+            const issueUrl = process.env.ISSUE_URL;
+            const body = fs.existsSync('portfolio-v2/portfolio-sync-review.md')
+              ? fs.readFileSync('portfolio-v2/portfolio-sync-review.md', 'utf8')
+              : 'Portfolio sync needs review.';
+            fs.writeFileSync(process.env.PAYLOAD_FILE, JSON.stringify({
+              from: process.env.FROM_ADDRESS,
+              to: [process.env.ALERT_EMAIL],
+              subject: 'Portfolio sync needs review',
+              text: body + '\n\nReview issue: ' + issueUrl
+            }));
+          "
+
+          curl --fail --silent --show-error \
+            --request POST "https://api.resend.com/emails" \
+            --header "Authorization: Bearer $RESEND_API_KEY" \
+            --header "Content-Type: application/json" \
+            --data @"$PAYLOAD_FILE"
+
+          echo "Review email sent to $ALERT_EMAIL." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Auto-merge low-risk project update
+        if: env.AUTO_MERGE == 'true' && steps.apply.outputs.risk == 'low' && steps.pr.outputs.pr_url != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh pr merge "${{ steps.pr.outputs.pr_url }}" --squash --delete-branch --auto; then
+            echo "Auto-merge enabled for low-risk portfolio update." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Auto-merge could not be enabled. Please review and merge the PR manually." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Fail when build is broken
+        if: always() && steps.build.outcome == 'failure'
+        run: |
+          echo "Portfolio build failed, so the sync was blocked." >> "$GITHUB_STEP_SUMMARY"
+          exit 1
