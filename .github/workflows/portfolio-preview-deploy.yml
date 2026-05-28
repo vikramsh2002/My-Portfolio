@@ -1,0 +1,161 @@
+name: Deploy Portfolio Preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      preview_repository:
+        description: "Preview hosting repository in owner/name format."
+        required: true
+        default: "vikramsh2002/My-Portfolio-Preview"
+        type: string
+      preview_branch:
+        description: "Branch used by GitHub Pages in the preview repository."
+        required: true
+        default: "gh-pages"
+        type: string
+      preview_base:
+        description: "Vite base path for the preview Pages site."
+        required: true
+        default: "/My-Portfolio-Preview/"
+        type: string
+      preview_url:
+        description: "Public preview URL to show in the workflow summary or PR comment."
+        required: true
+        default: "https://vikramsh2002.github.io/My-Portfolio-Preview/"
+        type: string
+      pr_number:
+        description: "Optional PR number in this repo to comment with the preview link."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: portfolio-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    env:
+      PREVIEW_REPOSITORY: ${{ inputs.preview_repository }}
+      PREVIEW_BRANCH: ${{ inputs.preview_branch }}
+      PREVIEW_BASE: ${{ inputs.preview_base }}
+      PREVIEW_URL: ${{ inputs.preview_url }}
+      PR_NUMBER: ${{ inputs.pr_number }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: portfolio-v2/package-lock.json
+
+      - name: Build preview
+        working-directory: portfolio-v2
+        env:
+          VITE_BASE: ${{ env.PREVIEW_BASE }}
+        run: |
+          npm ci
+          npm run build
+
+      - name: Validate preview configuration
+        env:
+          PORTFOLIO_PREVIEW_TOKEN: ${{ secrets.PORTFOLIO_PREVIEW_TOKEN }}
+        run: |
+          if [ -z "$PORTFOLIO_PREVIEW_TOKEN" ]; then
+            echo "PORTFOLIO_PREVIEW_TOKEN is required to push to $PREVIEW_REPOSITORY." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          if [ ! -d "portfolio-v2/dist" ]; then
+            echo "portfolio-v2/dist was not created." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Deploy dist to preview repository
+        env:
+          PORTFOLIO_PREVIEW_TOKEN: ${{ secrets.PORTFOLIO_PREVIEW_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          PREVIEW_REMOTE="https://x-access-token:${PORTFOLIO_PREVIEW_TOKEN}@github.com/${PREVIEW_REPOSITORY}.git"
+          git clone --depth 1 --branch "$PREVIEW_BRANCH" "$PREVIEW_REMOTE" _preview || {
+            git clone --depth 1 "$PREVIEW_REMOTE" _preview
+            git -C _preview checkout --orphan "$PREVIEW_BRANCH"
+            git -C _preview rm -rf . || true
+          }
+
+          find _preview -mindepth 1 \
+            ! -path "_preview/.git" \
+            ! -path "_preview/.git/*" \
+            -exec rm -rf {} +
+
+          cp -R portfolio-v2/dist/. _preview/
+          touch _preview/.nojekyll
+
+          cat > _preview/preview-metadata.json <<EOF
+          {
+            "source_repository": "$GITHUB_REPOSITORY",
+            "source_ref": "$GITHUB_REF_NAME",
+            "source_sha": "$GITHUB_SHA",
+            "preview_base": "$PREVIEW_BASE",
+            "preview_url": "$PREVIEW_URL",
+            "deployed_at": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          }
+          EOF
+
+          git -C _preview config user.name "github-actions[bot]"
+          git -C _preview config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C _preview add .
+
+          if git -C _preview diff --cached --quiet; then
+            echo "Preview repository already matches this build." >> "$GITHUB_STEP_SUMMARY"
+          else
+            git -C _preview commit -m "Deploy preview for ${GITHUB_REPOSITORY}@${GITHUB_SHA::7}"
+            git -C _preview push origin "$PREVIEW_BRANCH"
+          fi
+
+      - name: Publish preview link
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "## Portfolio Preview"
+            echo
+            echo "- Preview URL: $PREVIEW_URL"
+            echo "- Preview repository: $PREVIEW_REPOSITORY"
+            echo "- Preview branch: $PREVIEW_BRANCH"
+            echo "- Source branch: $GITHUB_REF_NAME"
+            echo "- Source SHA: $GITHUB_SHA"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -n "$PR_NUMBER" ]; then
+            COMMENT_FILE="$RUNNER_TEMP/preview-comment.json"
+            export COMMENT_FILE
+            node -e "
+              const fs = require('node:fs');
+              const body = [
+                'Portfolio preview deployed:',
+                '',
+                process.env.PREVIEW_URL,
+                '',
+                'Source: ' + process.env.GITHUB_REF_NAME + ' @ ' + process.env.GITHUB_SHA.slice(0, 7)
+              ].join('\n');
+              fs.writeFileSync(process.env.COMMENT_FILE, JSON.stringify({ body }));
+            "
+
+            curl --fail --silent --show-error \
+              --request POST \
+              --url "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" \
+              --header "Authorization: Bearer $GH_TOKEN" \
+              --header "Accept: application/vnd.github+json" \
+              --header "Content-Type: application/json" \
+              --data @"$COMMENT_FILE"
+          fi
