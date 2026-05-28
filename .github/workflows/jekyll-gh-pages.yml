@@ -37,6 +37,8 @@ jobs:
         id: build_v2
         continue-on-error: true
         working-directory: portfolio-v2
+        env:
+          VITE_BASE: ${{ vars.PORTFOLIO_LIVE_BASE || '/My-Portfolio/' }}
         run: |
           npm ci
           npm run build

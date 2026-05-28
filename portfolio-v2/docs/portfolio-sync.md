@@ -67,6 +67,20 @@ You can switch it to another model available in your GitHub Models catalog.
 
 The workflow treats dependency, workflow, secret, layout, and broad code changes as high risk. High-risk or unclear updates do not get merged automatically. Missing or failed project thumbnails are also blocked. Instead, the workflow creates a review issue and can send an email alert.
 
+## Preview Before Merge
+
+For generated project PRs, use the `Deploy Portfolio Preview` workflow before merging when you want to see the exact rendered UI on a separate Pages URL.
+
+The preview workflow:
+
+- Builds the selected branch from this repository.
+- Uses `VITE_BASE=/My-Portfolio-Preview/`.
+- Pushes only the compiled `portfolio-v2/dist` files to the preview repository.
+- Writes the preview link in the workflow summary.
+- Can comment the preview link on a PR when `pr_number` is provided.
+
+This keeps the live portfolio separate from preview testing.
+
 ## Email Alerts
 
 Email alerts use Resend when these repository secrets are configured:
