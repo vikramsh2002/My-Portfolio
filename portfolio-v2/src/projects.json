@@ -1,5 +1,31 @@
 [
   {
+    "title": "VRL Learning Navigator",
+    "subtitle": "Course guidance and learning path assistant",
+    "image": "images/Projects/vrl-learning-navigator.png",
+    "description": "VRL Learning Navigator helps users discover relevant courses, build goal-based learning paths, compare similar courses, track progress, and practice with lightweight validation.",
+    "impact": "Facilitates online learners in making informed decisions about course selection through filtering, recommendations, and progress tracking.",
+    "tags": [
+      "Python",
+      "Streamlit",
+      "Scikit-learn",
+      "Pandas",
+      "Recommender",
+      "Data"
+    ],
+    "featured": false,
+    "links": [
+      {
+        "label": "Source",
+        "href": "https://github.com/vikramsh2002/VRL-Learning-Navigator"
+      },
+      {
+        "label": "Live/demo",
+        "href": "https://vrl-learning-navigator.streamlit.app/"
+      }
+    ]
+  },
+  {
     "title": "Dr. CNN",
     "subtitle": "Lung condition detection",
     "image": "images/Projects/DrCnn.jpg",
