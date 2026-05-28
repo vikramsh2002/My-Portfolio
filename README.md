@@ -14,6 +14,8 @@ The modern version is isolated under [`portfolio-v2`](portfolio-v2/) and built w
 
 Detailed architecture notes: [portfolio-v2/docs/architecture.md](portfolio-v2/docs/architecture.md)
 
+GitHub Models project sync workflow: [portfolio-v2/docs/portfolio-sync.md](portfolio-v2/docs/portfolio-sync.md)
+
 ```mermaid
 flowchart TD
     A["Old root portfolio<br/>index.html + style.css + readmore.js"] --> B["Fallback static site"]
