@@ -81,11 +81,18 @@ Preview: https://vikramsh2002.github.io/My-Portfolio-Preview/
 The preview workflow is configurable through manual inputs:
 
 ```text
+source_ref
 preview_repository
 preview_branch
 preview_base
 preview_url
 pr_number
+```
+
+For PR previews, run the workflow from `main` and set `source_ref` to the PR branch, for example:
+
+```text
+portfolio-sync/26572564684-1
 ```
 
 It requires this repository secret:

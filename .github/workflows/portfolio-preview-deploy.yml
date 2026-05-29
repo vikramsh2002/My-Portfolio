@@ -3,6 +3,11 @@ name: Deploy Portfolio Preview
 on:
   workflow_dispatch:
     inputs:
+      source_ref:
+        description: "Source branch, tag, or SHA to build. Use the PR branch for preview."
+        required: false
+        default: ""
+        type: string
       preview_repository:
         description: "Preview hosting repository in owner/name format."
         required: true
@@ -34,13 +39,14 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: portfolio-preview-${{ github.ref }}
+  group: portfolio-preview-${{ inputs.source_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
   preview:
     runs-on: ubuntu-latest
     env:
+      SOURCE_REF: ${{ inputs.source_ref || github.ref_name }}
       PREVIEW_REPOSITORY: ${{ inputs.preview_repository }}
       PREVIEW_BRANCH: ${{ inputs.preview_branch }}
       PREVIEW_BASE: ${{ inputs.preview_base }}
@@ -49,6 +55,14 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_REF }}
+
+      - name: Capture source revision
+        id: source
+        run: |
+          echo "ref=$SOURCE_REF" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -82,6 +96,8 @@ jobs:
       - name: Deploy dist to preview repository
         env:
           PORTFOLIO_PREVIEW_TOKEN: ${{ secrets.PORTFOLIO_PREVIEW_TOKEN }}
+          SOURCE_REF: ${{ steps.source.outputs.ref }}
+          SOURCE_SHA: ${{ steps.source.outputs.sha }}
         run: |
           set -euo pipefail
 
@@ -103,8 +119,8 @@ jobs:
           cat > _preview/preview-metadata.json <<EOF
           {
             "source_repository": "$GITHUB_REPOSITORY",
-            "source_ref": "$GITHUB_REF_NAME",
-            "source_sha": "$GITHUB_SHA",
+            "source_ref": "$SOURCE_REF",
+            "source_sha": "$SOURCE_SHA",
             "preview_base": "$PREVIEW_BASE",
             "preview_url": "$PREVIEW_URL",
             "deployed_at": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
@@ -118,13 +134,15 @@ jobs:
           if git -C _preview diff --cached --quiet; then
             echo "Preview repository already matches this build." >> "$GITHUB_STEP_SUMMARY"
           else
-            git -C _preview commit -m "Deploy preview for ${GITHUB_REPOSITORY}@${GITHUB_SHA::7}"
+            git -C _preview commit -m "Deploy preview for ${GITHUB_REPOSITORY}@${SOURCE_SHA::7}"
             git -C _preview push origin "$PREVIEW_BRANCH"
           fi
 
       - name: Publish preview link
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_REF: ${{ steps.source.outputs.ref }}
+          SOURCE_SHA: ${{ steps.source.outputs.sha }}
         run: |
           {
             echo "## Portfolio Preview"
@@ -132,8 +150,8 @@ jobs:
             echo "- Preview URL: $PREVIEW_URL"
             echo "- Preview repository: $PREVIEW_REPOSITORY"
             echo "- Preview branch: $PREVIEW_BRANCH"
-            echo "- Source branch: $GITHUB_REF_NAME"
-            echo "- Source SHA: $GITHUB_SHA"
+            echo "- Source ref: $SOURCE_REF"
+            echo "- Source SHA: $SOURCE_SHA"
           } >> "$GITHUB_STEP_SUMMARY"
 
           if [ -n "$PR_NUMBER" ]; then
@@ -146,7 +164,7 @@ jobs:
                 '',
                 process.env.PREVIEW_URL,
                 '',
-                'Source: ' + process.env.GITHUB_REF_NAME + ' @ ' + process.env.GITHUB_SHA.slice(0, 7)
+                'Source: ' + process.env.SOURCE_REF + ' @ ' + process.env.SOURCE_SHA.slice(0, 7)
               ].join('\n');
               fs.writeFileSync(process.env.COMMENT_FILE, JSON.stringify({ body }));
             "
