@@ -37,22 +37,24 @@ flowchart TD
 This repository uses three safety layers:
 
 - `Portfolio V2 CI`: builds `portfolio-v2` on pull requests without deploying.
-- `Deploy Portfolio Preview`: manually builds a branch and publishes only the static `dist/` output to a separate preview repository.
+- `Sync Portfolio Project with GitHub Models`: creates a project PR, dispatches CI, and can deploy the preview in one run.
+- `Deploy Portfolio Preview`: manually rebuilds a branch preview when needed.
 - `Deploy Portfolio V2 to GitHub Pages`: deploys the live site only from `main`.
 
 Generated portfolio sync PRs are created by `github-actions[bot]`. Because GitHub does not fire normal `pull_request` workflows from `GITHUB_TOKEN`-created events, the sync workflow explicitly dispatches `Portfolio V2 CI` for the generated branch after it opens the PR.
 
 ```mermaid
 flowchart TD
-    A["Feature branch"] --> B["Portfolio V2 CI"]
-    M["Generated project PR"] --> N["Sync workflow dispatches CI"]
+    S["Run AI project sync"] --> M["Generated project PR"]
+    M --> N["Sync workflow dispatches CI"]
     N --> B
+    A["Feature branch"] --> B["Portfolio V2 CI"]
     B --> C{"Build passes"}
     C -->|No| D["Fix before merge"]
-    C -->|Yes| E["Optional manual preview deploy"]
+    C -->|Yes| E["Automatic or manual preview deploy"]
     E --> F["Build with preview base path"]
     F --> G["Push dist to preview repo"]
-    G --> H["Preview Pages URL"]
+    G --> H["Preview link on PR"]
     H --> I{"Looks good"}
     I -->|No| D
     I -->|Yes| J["Merge to main"]
@@ -69,7 +71,9 @@ Source repo:  vikramsh2002/My-Portfolio
 Preview repo: vikramsh2002/My-Portfolio-Preview
 ```
 
-The source code stays in `My-Portfolio`. The preview workflow builds the selected branch, then pushes only `portfolio-v2/dist` into the preview repository's Pages branch.
+The source code stays in `My-Portfolio`. Preview deployment builds the selected branch, then pushes only `portfolio-v2/dist` into the preview repository's Pages branch.
+
+The AI sync workflow can deploy preview automatically after it opens a PR. The manual preview workflow remains available when you want to rebuild a preview for an existing branch.
 
 This keeps the preview URL separate from the live portfolio:
 

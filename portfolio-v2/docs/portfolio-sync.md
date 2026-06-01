@@ -15,7 +15,8 @@ Make sure GitHub Models is enabled for the repository first.
 5. Paste the LinkedIn/profile update text. Include source, demo, live, or LinkedIn URLs if available.
 6. Keep the default model or enter another GitHub Models id.
 7. Optionally paste a `card_image_url` if the project does not have a live website that can be screenshotted.
-8. Leave `auto_merge` off unless you want low-risk updates merged automatically.
+8. Keep `deploy_preview` on so the generated PR gets a preview deployment automatically.
+9. Leave `auto_merge` off unless you want low-risk updates merged automatically after CI and preview checks are safe.
 
 ## Automatic Trigger
 
@@ -32,6 +33,11 @@ curl --request POST \
       "linkedin_update": "Built and shipped a new project...",
       "model": "openai/gpt-4o",
       "auto_merge": false,
+      "deploy_preview": true,
+      "preview_repository": "vikramsh2002/My-Portfolio-Preview",
+      "preview_branch": "gh-pages",
+      "preview_base": "/My-Portfolio-Preview/",
+      "preview_url": "https://vikramsh2002.github.io/My-Portfolio-Preview/",
       "card_image_url": "https://example.com/project-card.png"
     }
   }'
@@ -45,13 +51,16 @@ The workflow:
 
 - Sends the current projects and pasted update to GitHub Models.
 - Converts the update into structured project data.
+- Updates an existing project instead of creating a duplicate when the title, a similar title, or a project URL matches an existing card.
 - Prepares a project thumbnail by reusing an existing local image, downloading `card_image_url`, or capturing a screenshot from the live/demo URL.
 - Applies an add/update to the project list.
 - Places newly added projects in the featured/top project row by default unless the update explicitly says not to feature them.
 - Runs the Vite build.
 - Opens a pull request with a summary when the update is safe enough for review.
 - Dispatches `Portfolio V2 CI` for the generated PR branch so required checks run for bot-created PRs.
-- Optionally enables auto-merge for low-risk updates after the build passes.
+- Builds and deploys the generated branch to the preview repository when `deploy_preview` is enabled.
+- Comments the preview link on the generated PR.
+- Optionally enables auto-merge for low-risk updates after CI and preview deployment are safe.
 - Creates a GitHub issue when the update is high-risk, unclear, missing a usable project image, or the build fails.
 - Sends a review email when email secrets are configured.
 
@@ -73,7 +82,9 @@ The workflow treats dependency, workflow, secret, layout, and broad code changes
 
 ## Preview Before Merge
 
-For generated project PRs, use the `Deploy Portfolio Preview` workflow before merging when you want to see the exact rendered UI on a separate Pages URL.
+Generated project PRs can deploy preview automatically from the sync workflow. Keep `deploy_preview=true` for the normal one-click path.
+
+You can still use the manual `Deploy Portfolio Preview` workflow when you want to rebuild a preview for an existing branch without rerunning AI sync.
 
 The preview workflow:
 

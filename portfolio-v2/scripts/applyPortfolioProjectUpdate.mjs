@@ -28,14 +28,17 @@ const featurePolicy = normalizeFeaturePolicy(change.featurePolicy);
 const reviewNotes = Array.isArray(change.reviewNotes) ? change.reviewNotes.filter(Boolean) : [];
 let action = "none";
 let changed = false;
+let matchedProjectTitle = "";
 let updatedProjects = currentProjects;
 
 if (normalizedIntent === "add_project" || normalizedIntent === "update_project") {
-  const existingIndex = findProjectIndex(currentProjects, change.matchTitle || project.title);
+  const existingMatch = findExistingProject(currentProjects, change.matchTitle, project);
+  const existingIndex = existingMatch.index;
 
   if (existingIndex >= 0) {
     const existingProject = currentProjects[existingIndex];
     const projectPatch = compactProjectPatch(project);
+    matchedProjectTitle = existingProject.title;
     updatedProjects = [...currentProjects];
     updatedProjects[existingIndex] = {
       ...existingProject,
@@ -47,6 +50,14 @@ if (normalizedIntent === "add_project" || normalizedIntent === "update_project")
     };
     action = "updated";
     changed = true;
+    if (normalizedIntent === "add_project") {
+      reviewNotes.unshift(
+        `The update looked like a new project, but matched existing project "${existingProject.title}" by ${existingMatch.reason}. Updated the existing card instead.`
+      );
+    }
+  } else if (normalizedIntent === "update_project") {
+    action = "needs_review";
+    reviewNotes.unshift("The update asked to modify an existing project, but no matching portfolio project was found.");
   } else if (!project.title || !project.description) {
     action = "needs_review";
     reviewNotes.unshift("The model did not provide enough detail to create a new portfolio project safely.");
@@ -74,6 +85,7 @@ writeSummary({
   risk,
   reason: String(change.reason || "").trim(),
   projectTitle: project.title,
+  matchedProjectTitle,
   reviewNotes,
   changed,
 });
@@ -82,6 +94,8 @@ writeOutput("action", action);
 writeOutput("intent", normalizedIntent);
 writeOutput("risk", risk);
 writeOutput("changed", String(changed));
+writeOutput("project_title", project.title);
+writeOutput("matched_project_title", matchedProjectTitle);
 writeOutput("summary_path", summaryPath);
 
 function parseJsonResponse(text) {
@@ -189,14 +203,39 @@ function clean(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
 }
 
-function findProjectIndex(projects, title) {
-  const target = slug(title);
+function findExistingProject(projects, matchTitle, project) {
+  const titleCandidates = [matchTitle, project.title].map(clean).filter(Boolean);
 
-  if (!target) {
-    return -1;
+  for (const title of titleCandidates) {
+    const target = slug(title);
+    if (!target) {
+      continue;
+    }
+
+    const index = projects.findIndex((existingProject) => slug(existingProject.title) === target);
+    if (index >= 0) {
+      return { index, reason: "exact title" };
+    }
   }
 
-  return projects.findIndex((project) => slug(project.title) === target);
+  const projectLinks = new Set(project.links.map((link) => normalizeHref(link.href)).filter(Boolean));
+  if (projectLinks.size) {
+    const index = projects.findIndex((existingProject) =>
+      normalizeLinks(existingProject.links).some((link) => projectLinks.has(normalizeHref(link.href)))
+    );
+    if (index >= 0) {
+      return { index, reason: "matching URL" };
+    }
+  }
+
+  if (project.title) {
+    const index = projects.findIndex((existingProject) => areSimilarTitles(project.title, existingProject.title));
+    if (index >= 0) {
+      return { index, reason: "similar title" };
+    }
+  }
+
+  return { index: -1, reason: "" };
 }
 
 function slug(value) {
@@ -206,7 +245,70 @@ function slug(value) {
     .replace(/^-+|-+$/g, "");
 }
 
-function writeSummary({ action, intent, risk, reason, projectTitle, reviewNotes, changed }) {
+function normalizeHref(href) {
+  const cleaned = clean(href);
+  if (!cleaned) {
+    return "";
+  }
+
+  try {
+    const url = new URL(cleaned);
+    url.hash = "";
+    url.searchParams.sort();
+    return url.toString().replace(/\/$/, "").toLowerCase();
+  } catch {
+    return cleaned.replace(/\/$/, "").toLowerCase();
+  }
+}
+
+function areSimilarTitles(left, right) {
+  const leftSlug = slug(left);
+  const rightSlug = slug(right);
+
+  if (!leftSlug || !rightSlug) {
+    return false;
+  }
+
+  const shorter = leftSlug.length <= rightSlug.length ? leftSlug : rightSlug;
+  const longer = leftSlug.length > rightSlug.length ? leftSlug : rightSlug;
+  if (shorter.length >= 12 && longer.includes(shorter)) {
+    return true;
+  }
+
+  const leftTokens = titleTokens(left);
+  const rightTokens = titleTokens(right);
+  if (!leftTokens.length || !rightTokens.length) {
+    return false;
+  }
+
+  const intersectionCount = leftTokens.filter((token) => rightTokens.includes(token)).length;
+  const unionCount = new Set([...leftTokens, ...rightTokens]).size;
+  const containment = intersectionCount / Math.min(leftTokens.length, rightTokens.length);
+  const jaccard = intersectionCount / unionCount;
+
+  return containment >= 0.8 || jaccard >= 0.75;
+}
+
+function titleTokens(value) {
+  const genericTokens = new Set([
+    "vrl",
+    "app",
+    "application",
+    "project",
+    "system",
+    "web",
+    "website",
+    "engine",
+    "tool",
+    "platform",
+  ]);
+
+  return slug(value)
+    .split("-")
+    .filter((token) => token.length > 1 && !genericTokens.has(token));
+}
+
+function writeSummary({ action, intent, risk, reason, projectTitle, matchedProjectTitle, reviewNotes, changed }) {
   const lines = [
     "# Portfolio Project Sync",
     "",
@@ -215,6 +317,7 @@ function writeSummary({ action, intent, risk, reason, projectTitle, reviewNotes,
     `- Risk: ${risk}`,
     `- Changed portfolio data: ${changed ? "yes" : "no"}`,
     projectTitle ? `- Project: ${projectTitle}` : "",
+    matchedProjectTitle ? `- Matched existing project: ${matchedProjectTitle}` : "",
     reason ? `- Reason: ${reason}` : "",
     "",
   ].filter(Boolean);
