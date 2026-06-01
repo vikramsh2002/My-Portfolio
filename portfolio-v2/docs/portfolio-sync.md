@@ -47,6 +47,7 @@ The workflow:
 - Converts the update into structured project data.
 - Prepares a project thumbnail by reusing an existing local image, downloading `card_image_url`, or capturing a screenshot from the live/demo URL.
 - Applies an add/update to the project list.
+- Places newly added projects in the featured/top project row by default unless the update explicitly says not to feature them.
 - Runs the Vite build.
 - Opens a pull request with a summary when the update is safe enough for review.
 - Dispatches `Portfolio V2 CI` for the generated PR branch so required checks run for bot-created PRs.
