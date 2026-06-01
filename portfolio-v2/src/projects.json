@@ -13,7 +13,7 @@
       "Recommender",
       "Data"
     ],
-    "featured": false,
+    "featured": true,
     "links": [
       {
         "label": "Source",
