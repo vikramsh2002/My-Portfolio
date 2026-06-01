@@ -76,13 +76,15 @@ For generated project PRs, use the `Deploy Portfolio Preview` workflow before me
 
 The preview workflow:
 
-- Builds the selected branch from this repository.
+- Builds the configured `source_ref` from this repository.
 - Uses `VITE_BASE=/My-Portfolio-Preview/`.
 - Pushes only the compiled `portfolio-v2/dist` files to the preview repository.
 - Writes the preview link in the workflow summary.
 - Can comment the preview link on a PR when `pr_number` is provided.
 
 This keeps the live portfolio separate from preview testing.
+
+For a generated project PR, run the preview workflow from `main` and set `source_ref` to the generated PR branch. This avoids accidentally rebuilding `main` and thinking the project update is missing.
 
 ## Email Alerts
 
