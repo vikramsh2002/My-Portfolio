@@ -233,7 +233,9 @@ function extensionFromUrl(url) {
 }
 
 function clean(value) {
-  return String(value || "").replace(/\s+/g, " ").trim();
+  return String(value || "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function slug(value) {

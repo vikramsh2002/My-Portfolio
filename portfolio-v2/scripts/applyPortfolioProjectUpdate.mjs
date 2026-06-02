@@ -200,7 +200,9 @@ function labelForLink(href) {
 }
 
 function clean(value) {
-  return String(value || "").replace(/\s+/g, " ").trim();
+  return String(value || "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function findExistingProject(projects, matchTitle, project) {

@@ -1,6 +1,13 @@
 :root {
   color-scheme: light;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   --ink: #101114;
   --ink-soft: #41454f;
   --muted: #6d7280;
@@ -242,9 +249,7 @@ a {
 
 .portrait-frame {
   aspect-ratio: 1;
-  background:
-    linear-gradient(145deg, rgba(54, 200, 210, 0.12), rgba(229, 107, 93, 0.12)),
-    #20262b;
+  background: linear-gradient(145deg, rgba(54, 200, 210, 0.12), rgba(229, 107, 93, 0.12)), #20262b;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -432,7 +437,6 @@ a {
   padding: 7px 10px;
 }
 
-.featured-grid,
 .project-grid {
   display: grid;
   gap: 18px;
@@ -440,7 +444,7 @@ a {
 }
 
 .project-grid {
-  margin-top: 18px;
+  margin-top: 22px;
 }
 
 .project-card {
@@ -451,15 +455,9 @@ a {
   overflow: hidden;
 }
 
-.project-card.featured {
-  border-color: rgba(54, 200, 210, 0.55);
-}
-
 .project-image {
   align-items: center;
-  background:
-    linear-gradient(135deg, rgba(54, 200, 210, 0.12), rgba(117, 200, 118, 0.08)),
-    #f4f2ec;
+  background: linear-gradient(135deg, rgba(54, 200, 210, 0.12), rgba(117, 200, 118, 0.08)), #f4f2ec;
   border-right: 1px solid var(--line);
   display: flex;
   justify-content: center;
@@ -528,10 +526,11 @@ a {
 }
 
 .project-tools {
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 34px 0 0;
+  margin: -10px 0 0;
 }
 
 .filter {
@@ -540,15 +539,23 @@ a {
   border-radius: 999px;
   color: var(--ink-soft);
   cursor: pointer;
+  font-size: 0.92rem;
   font-weight: 800;
-  min-height: 38px;
-  padding: 0 13px;
+  min-height: 36px;
+  padding: 0 12px;
 }
 
 .filter.active {
   background: var(--dark);
   border-color: var(--dark);
   color: white;
+}
+
+.project-count {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+  margin-left: 6px;
 }
 
 .section-split {
@@ -604,9 +611,7 @@ a {
 }
 
 .proof-panel {
-  background:
-    linear-gradient(135deg, rgba(54, 200, 210, 0.14), rgba(117, 200, 118, 0.11)),
-    var(--panel);
+  background: linear-gradient(135deg, rgba(54, 200, 210, 0.14), rgba(117, 200, 118, 0.11)), var(--panel);
 }
 
 .proof-panel p {
@@ -662,7 +667,6 @@ a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .featured-grid,
   .project-grid {
     grid-template-columns: 1fr;
   }
@@ -735,6 +739,11 @@ a {
     border-bottom: 1px solid var(--line);
     border-right: 0;
     min-height: 0;
+  }
+
+  .project-count {
+    flex-basis: 100%;
+    margin-left: 0;
   }
 
   .publication-item {

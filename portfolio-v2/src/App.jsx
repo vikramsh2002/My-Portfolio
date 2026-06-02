@@ -15,15 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  certifications,
-  education,
-  experience,
-  profile,
-  projects,
-  publications,
-  skillGroups,
-} from "./portfolioData";
+import { certifications, education, experience, profile, projects, publications, skillGroups } from "./portfolioData";
 
 const asset = (path) => `${import.meta.env.BASE_URL}${path}`;
 const resumeHref = asset("resume/Vikram_Sharma_Python_Backend_Engineer.pdf");
@@ -32,17 +24,27 @@ const defaultProjectImage = "images/Projects/headlines.png";
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All");
-  const featuredProjects = projects.filter((project) => project.featured);
-  const libraryProjects = projects.filter((project) => !project.featured);
 
   const filters = useMemo(() => {
-    const tags = projects.flatMap((project) => project.tags);
-    return ["All", ...Array.from(new Set(tags)).slice(0, 9)];
+    return [
+      { label: "All" },
+      { label: "Python", tags: ["Python"] },
+      { label: "APIs", tags: ["APIs", "API"] },
+      { label: "ML / AI", tags: ["ML", "TensorFlow", "Deep Learning", "Computer Vision", "NLP", "Regression"] },
+      { label: "React", tags: ["React", "Frontend"] },
+      { label: "Java", tags: ["Java", "Spring Boot", "Microservices"] },
+      { label: "Data", tags: ["Data", "MongoDB", "Recommender"] },
+    ];
   }, []);
 
-  const shownProjects = libraryProjects.filter(
-    (project) => activeFilter === "All" || project.tags.includes(activeFilter)
-  );
+  const activeFilterConfig = filters.find((filter) => filter.label === activeFilter) || filters[0];
+  const shownProjects = projects.filter((project) => {
+    if (!activeFilterConfig.tags) {
+      return true;
+    }
+
+    return project.tags.some((tag) => activeFilterConfig.tags.includes(tag));
+  });
 
   return (
     <div className="app-shell">
@@ -53,9 +55,7 @@ function App() {
           <div className="hero-grid">
             <div className="hero-copy">
               <p className="eyebrow">Python Backend Engineer</p>
-              <h1>
-                Building reliable APIs, AWS serverless systems, and production-ready backend services.
-              </h1>
+              <h1>Building reliable APIs, AWS serverless systems, and production-ready backend services.</h1>
               <p className="hero-summary">{profile.summary}</p>
 
               <div className="hero-actions" aria-label="Primary actions">
@@ -104,7 +104,7 @@ function App() {
             icon={<BriefcaseBusiness size={20} />}
             kicker="Experience"
             title="Backend work in production environments"
-            text="Resume-led experience focused on service reliability, API delivery, cloud systems, and maintainable engineering."
+            text="Experience across service reliability, API delivery, cloud systems, and maintainable engineering practices."
           />
           <div className="timeline">
             {experience.map((item) => (
@@ -138,7 +138,7 @@ function App() {
             icon={<Server size={20} />}
             kicker="Technical Stack"
             title="Backend-first skill set with cloud and testing depth"
-            text="Grouped around the way engineering leads review practical production readiness."
+            text="Core tools and technologies used across backend services, cloud workflows, testing, data, and frontend delivery."
           />
           <div className="skill-grid">
             {skillGroups.map((group) => (
@@ -158,28 +158,25 @@ function App() {
           <SectionHeading
             icon={<Code2 size={20} />}
             kicker="Projects"
-            title="Selected engineering work, with the full project history kept intact"
-            text="The first row is intentionally stronger for backend and engineering review; the rest stays available for context."
+            title="Selected software engineering projects"
+            text="Backend, API, cloud, and machine learning projects showing implementation depth, reliability thinking, and end-to-end delivery."
           />
-
-          <div className="featured-grid">
-            {featuredProjects
-              .map((project) => (
-                <ProjectCard key={project.title} project={project} featured />
-              ))}
-          </div>
 
           <div className="project-tools" aria-label="Project filters">
             {filters.map((filter) => (
               <button
-                className={filter === activeFilter ? "filter active" : "filter"}
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
+                aria-pressed={filter.label === activeFilter}
+                className={filter.label === activeFilter ? "filter active" : "filter"}
+                key={filter.label}
+                onClick={() => setActiveFilter(filter.label)}
                 type="button"
               >
-                {filter}
+                {filter.label}
               </button>
             ))}
+            <span className="project-count">
+              {shownProjects.length} {shownProjects.length === 1 ? "project" : "projects"}
+            </span>
           </div>
 
           <div className="project-grid">
@@ -248,10 +245,10 @@ function App() {
         <section className="contact-section section-dark" id="contact">
           <div className="contact-inner">
             <p className="eyebrow">Contact</p>
-            <h2>Backend engineering, API reliability, and cloud systems are the lane.</h2>
+            <h2>Open to backend engineering roles focused on APIs, cloud systems, and reliable services.</h2>
             <p>
-              Reach out for Python backend roles, AWS serverless work, or engineering conversations around
-              production systems.
+              Reach out for Python backend roles, AWS serverless work, or engineering conversations around production
+              systems.
             </p>
             <div className="contact-actions">
               <a className="button button-primary" href={`mailto:${profile.email}`}>
@@ -320,11 +317,11 @@ function SectionHeading({ icon, kicker, title, text }) {
   );
 }
 
-function ProjectCard({ project, featured = false }) {
+function ProjectCard({ project }) {
   const projectImage = project.image || defaultProjectImage;
 
   return (
-    <article className={featured ? "project-card featured" : "project-card"}>
+    <article className="project-card">
       <div className="project-image">
         <img src={asset(projectImage)} alt={`${project.title} preview`} loading="lazy" />
       </div>
