@@ -3,15 +3,12 @@ name: Portfolio V2 CI
 on:
   pull_request:
     branches: ["main"]
-    paths:
-      - "portfolio-v2/**"
-      - ".github/workflows/portfolio-v2-ci.yml"
-      - ".github/workflows/portfolio-project-sync.yml"
-      - ".github/prompts/**"
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
   build:
@@ -20,6 +17,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -28,8 +28,77 @@ jobs:
           cache: npm
           cache-dependency-path: portfolio-v2/package-lock.json
 
-      - name: Build Portfolio V2
+      - name: Install Dependencies
+        working-directory: portfolio-v2
+        run: npm ci
+
+      - name: Format Code
+        working-directory: portfolio-v2
+        run: npm run format
+
+      - name: Project Health and Clean up
+        id: project_health
         working-directory: portfolio-v2
         run: |
-          npm ci
-          npm run build
+          npm run project:health:fix
+          cat project-health-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit Automated Cleanups
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          set -euo pipefail
+
+          if git diff --quiet; then
+            echo "No automated formatting or project cleanup changes were needed." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Apply automated portfolio cleanup"
+          git push
+          echo "Committed automated formatting or project cleanup changes to this PR branch." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Check Code Formatting
+        working-directory: portfolio-v2
+        run: npm run format:check
+
+      - name: Comment Project Health Review
+        if: always() && github.event_name == 'pull_request' && steps.project_health.outputs.status == 'needs_review'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          MARKER="<!-- project-health-cleanup -->"
+          COMMENT_ID="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" \
+            --jq ".[] | select(.body | contains(\"$MARKER\")) | .id" | tail -n 1)"
+
+          COMMENT_FILE="$RUNNER_TEMP/project-health-comment.md"
+          {
+            echo "$MARKER"
+            if [ -f portfolio-v2/project-health-summary.md ]; then
+              cat portfolio-v2/project-health-summary.md
+            else
+              echo "Project Health and Clean up did not produce a summary. Please inspect the workflow logs."
+            fi
+          } > "$COMMENT_FILE"
+
+          if [ -n "$COMMENT_ID" ]; then
+            gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID" \
+              --field "body=$(cat "$COMMENT_FILE")"
+          else
+            gh pr comment "$PR_NUMBER" --body-file "$COMMENT_FILE"
+          fi
+
+      - name: Fail on Project Health Issues
+        if: steps.project_health.outputs.status == 'needs_review'
+        run: |
+          echo "Project Health and Clean up found issues. See the workflow summary or PR comment."
+          exit 1
+
+      - name: Build Portfolio V2
+        working-directory: portfolio-v2
+        run: npm run build

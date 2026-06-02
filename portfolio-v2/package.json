@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "format": "prettier --write --config ../.prettierrc.json --ignore-path ../.prettierignore \"src/**/*.{js,jsx,json,css}\" \"scripts/**/*.mjs\" \"index.html\" \"package.json\" \"docs/**/*.md\" \"../README.md\" \"../.github/**/*.{yml,yaml}\"",
+    "format:check": "prettier --check --config ../.prettierrc.json --ignore-path ../.prettierignore \"src/**/*.{js,jsx,json,css}\" \"scripts/**/*.mjs\" \"index.html\" \"package.json\" \"docs/**/*.md\" \"../README.md\" \"../.github/**/*.{yml,yaml}\"",
+    "project:health": "node scripts/checkProjectHealth.mjs",
+    "project:health:fix": "node scripts/checkProjectHealth.mjs --fix"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
@@ -15,6 +19,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
+    "prettier": "^3.8.3",
     "vite": "^5.4.11"
   }
 }
