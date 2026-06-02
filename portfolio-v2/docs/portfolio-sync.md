@@ -47,6 +47,7 @@ The workflow:
 - Converts the update into structured project data.
 - Prepares a project thumbnail by reusing an existing local image, downloading `card_image_url`, or capturing a screenshot from the live/demo URL.
 - Applies an add/update to the project list.
+- Places newly added projects in the featured/top project row by default unless the update explicitly says not to feature them.
 - Runs the Vite build.
 - Opens a pull request with a summary when the update is safe enough for review.
 - Dispatches `Portfolio V2 CI` for the generated PR branch so required checks run for bot-created PRs.
@@ -76,13 +77,15 @@ For generated project PRs, use the `Deploy Portfolio Preview` workflow before me
 
 The preview workflow:
 
-- Builds the selected branch from this repository.
+- Builds the configured `source_ref` from this repository.
 - Uses `VITE_BASE=/My-Portfolio-Preview/`.
 - Pushes only the compiled `portfolio-v2/dist` files to the preview repository.
 - Writes the preview link in the workflow summary.
 - Can comment the preview link on a PR when `pr_number` is provided.
 
 This keeps the live portfolio separate from preview testing.
+
+For a generated project PR, run the preview workflow from `main` and set `source_ref` to the generated PR branch. This avoids accidentally rebuilding `main` and thinking the project update is missing.
 
 ## Email Alerts
 

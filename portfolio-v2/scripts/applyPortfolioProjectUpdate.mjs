@@ -24,6 +24,7 @@ if (!Array.isArray(currentProjects)) {
 const normalizedIntent = normalizeIntent(change.intent);
 const risk = normalizeRisk(change.risk);
 const project = normalizeProject(change.project);
+const featurePolicy = normalizeFeaturePolicy(change.featurePolicy);
 const reviewNotes = Array.isArray(change.reviewNotes) ? change.reviewNotes.filter(Boolean) : [];
 let action = "none";
 let changed = false;
@@ -54,7 +55,7 @@ if (normalizedIntent === "add_project" || normalizedIntent === "update_project")
       {
         ...project,
         image: project.image || defaultProjectImage,
-        featured: Boolean(project.featured),
+        featured: featurePolicy !== "explicit_unfeatured",
       },
       ...currentProjects,
     ];
@@ -112,6 +113,11 @@ function normalizeIntent(intent) {
 function normalizeRisk(risk) {
   const allowed = new Set(["low", "medium", "high"]);
   return allowed.has(risk) ? risk : "high";
+}
+
+function normalizeFeaturePolicy(featurePolicy) {
+  const allowed = new Set(["default_featured", "explicit_featured", "explicit_unfeatured"]);
+  return allowed.has(featurePolicy) ? featurePolicy : "default_featured";
 }
 
 function normalizeProject(project = {}) {

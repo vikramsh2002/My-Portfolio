@@ -13,7 +13,8 @@ messages:
       - Mark needs_review when the update is too vague, promotional, or missing enough project details.
       - For new projects, use empty string for image so the workflow can capture the live/demo site thumbnail.
       - For existing project updates, preserve or reuse the existing image only when it still clearly fits.
-      - Use featured false for newly added projects unless the update explicitly says it should be featured.
+      - Use featured true for newly added projects so they appear at the top by default.
+      - Use featurePolicy "explicit_unfeatured" only when the update clearly says the project should not be featured or should not appear at the top.
   - role: user
     content: |-
       Current portfolio projects JSON:
@@ -82,12 +83,17 @@ jsonSchema: |-
           },
           "required": ["title", "subtitle", "image", "description", "impact", "tags", "featured", "links"]
         },
+        "featurePolicy": {
+          "type": "string",
+          "enum": ["default_featured", "explicit_featured", "explicit_unfeatured"],
+          "description": "For add_project, default to default_featured unless the update explicitly controls whether the project should appear at the top."
+        },
         "reviewNotes": {
           "type": "array",
           "items": { "type": "string" },
           "maxItems": 6
         }
       },
-      "required": ["intent", "risk", "matchTitle", "reason", "project", "reviewNotes"]
+      "required": ["intent", "risk", "matchTitle", "reason", "project", "featurePolicy", "reviewNotes"]
     }
   }
