@@ -527,30 +527,6 @@ a {
   text-decoration: none;
 }
 
-.project-tools {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 34px 0 0;
-}
-
-.filter {
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--ink-soft);
-  cursor: pointer;
-  font-weight: 800;
-  min-height: 38px;
-  padding: 0 13px;
-}
-
-.filter.active {
-  background: var(--dark);
-  border-color: var(--dark);
-  color: white;
-}
-
 .section-split {
   align-items: start;
   display: grid;

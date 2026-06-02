@@ -14,7 +14,7 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   certifications,
   education,
@@ -31,18 +31,8 @@ const defaultProjectImage = "images/Projects/headlines.png";
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("All");
   const featuredProjects = projects.filter((project) => project.featured);
   const libraryProjects = projects.filter((project) => !project.featured);
-
-  const filters = useMemo(() => {
-    const tags = projects.flatMap((project) => project.tags);
-    return ["All", ...Array.from(new Set(tags)).slice(0, 9)];
-  }, []);
-
-  const shownProjects = libraryProjects.filter(
-    (project) => activeFilter === "All" || project.tags.includes(activeFilter)
-  );
 
   return (
     <div className="app-shell">
@@ -169,21 +159,8 @@ function App() {
               ))}
           </div>
 
-          <div className="project-tools" aria-label="Project filters">
-            {filters.map((filter) => (
-              <button
-                className={filter === activeFilter ? "filter active" : "filter"}
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                type="button"
-              >
-                {filter}
-              </button>
-            ))}
-          </div>
-
           <div className="project-grid">
-            {shownProjects.map((project) => (
+            {libraryProjects.map((project) => (
               <ProjectCard key={project.title} project={project} />
             ))}
           </div>

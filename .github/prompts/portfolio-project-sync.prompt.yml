@@ -11,6 +11,11 @@ messages:
       - Preserve source/live/demo links when present in the update.
       - Mark risk high if the update asks to change layout, dependencies, secrets, workflow files, or anything outside project content.
       - Mark needs_review when the update is too vague, promotional, or missing enough project details.
+      - Only extend the existing Projects card list. Do not recreate, redesign, reorganize, or add UI/UX behavior.
+      - Never create new UI categories, filters, tabs, sections, buttons, menus, sorting controls, grouping controls, or layout changes.
+      - Tags are card metadata only. They must not be treated as UI controls or filter categories.
+      - Use only approved existing project tags: Python, TensorFlow, APIs, ML, Healthcare, Java, Spring Boot, Microservices, MongoDB, React, API, Frontend, NLP, Recommender, Streamlit, Computer Vision, Regression, Deep Learning, Data, Security, GUI, HTML, CSS, JavaScript, GitHub Pages.
+      - Map specific technologies to approved tags instead of inventing new tags. For example, Scikit-learn maps to ML, Pandas/NumPy/CSV/Mermaid maps to Data, TF-IDF maps to NLP, cosine similarity maps to Recommender.
       - For new projects, use empty string for image so the workflow can capture the live/demo site thumbnail.
       - For existing project updates, preserve or reuse the existing image only when it still clearly fits.
       - Use featured true for newly added projects so they appear at the top by default.
@@ -63,7 +68,10 @@ jsonSchema: |-
             "impact": { "type": "string" },
             "tags": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string",
+                "enum": ["Python", "TensorFlow", "APIs", "ML", "Healthcare", "Java", "Spring Boot", "Microservices", "MongoDB", "React", "API", "Frontend", "NLP", "Recommender", "Streamlit", "Computer Vision", "Regression", "Deep Learning", "Data", "Security", "GUI", "HTML", "CSS", "JavaScript", "GitHub Pages"]
+              },
               "maxItems": 8
             },
             "featured": { "type": "boolean" },

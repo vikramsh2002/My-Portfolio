@@ -6,6 +6,49 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectsDataPath = resolve(__dirname, "../src/projects.json");
 const summaryPath = resolve(__dirname, "../portfolio-sync-summary.md");
 const defaultProjectImage = "images/Projects/headlines.png";
+const approvedProjectTags = [
+  "Python",
+  "TensorFlow",
+  "APIs",
+  "ML",
+  "Healthcare",
+  "Java",
+  "Spring Boot",
+  "Microservices",
+  "MongoDB",
+  "React",
+  "API",
+  "Frontend",
+  "NLP",
+  "Recommender",
+  "Streamlit",
+  "Computer Vision",
+  "Regression",
+  "Deep Learning",
+  "Data",
+  "Security",
+  "GUI",
+  "HTML",
+  "CSS",
+  "JavaScript",
+  "GitHub Pages",
+];
+const approvedProjectTagMap = new Map(approvedProjectTags.map((tag) => [tag.toLowerCase(), tag]));
+const projectTagAliases = new Map([
+  ["scikit-learn", "ML"],
+  ["sklearn", "ML"],
+  ["pandas", "Data"],
+  ["numpy", "Data"],
+  ["csv", "Data"],
+  ["dataset", "Data"],
+  ["tf-idf", "NLP"],
+  ["tfidf", "NLP"],
+  ["cosine similarity", "Recommender"],
+  ["similarity", "Recommender"],
+  ["recommendation", "Recommender"],
+  ["visualization", "Data"],
+  ["mermaid", "Data"],
+]);
 
 const responsePath = process.argv[2];
 
@@ -166,7 +209,21 @@ function normalizeStringArray(value) {
     return [];
   }
 
-  return value.map(clean).filter(Boolean).slice(0, 8);
+  return [...new Set(value.map(normalizeProjectTag).filter(Boolean))].slice(0, 8);
+}
+
+function normalizeProjectTag(value) {
+  const tag = clean(value);
+  if (!tag) {
+    return "";
+  }
+
+  const directMatch = approvedProjectTagMap.get(tag.toLowerCase());
+  if (directMatch) {
+    return directMatch;
+  }
+
+  return projectTagAliases.get(tag.toLowerCase()) || "";
 }
 
 function normalizeLinks(value) {
