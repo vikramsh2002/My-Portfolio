@@ -52,6 +52,7 @@ The workflow:
 - Sends the current projects and pasted update to GitHub Models.
 - Converts the update into structured project data.
 - Updates an existing project instead of creating a duplicate when the title, a similar title, or a project URL matches an existing card.
+- Keeps project filter buttons stable by allowing only the approved existing tag taxonomy.
 - Prepares a project thumbnail by reusing an existing local image, downloading `card_image_url`, or capturing a screenshot from the live/demo URL.
 - Applies an add/update to the project list.
 - Places newly added projects in the featured/top project row by default unless the update explicitly says not to feature them.
@@ -79,6 +80,8 @@ You can switch it to another model available in your GitHub Models catalog.
 ## Safety Rules
 
 The workflow treats dependency, workflow, secret, layout, and broad code changes as high risk. High-risk or unclear updates do not get merged automatically. Missing or failed project thumbnails are also blocked. Instead, the workflow creates a review issue and can send an email alert.
+
+Project sync must not introduce new UI controls. Generated tags are restricted to the existing portfolio taxonomy, and the visible project filter row is fixed in the React UI. Specific technologies are mapped into broad existing tags such as `ML`, `Data`, `NLP`, and `Recommender`.
 
 ## Preview Before Merge
 

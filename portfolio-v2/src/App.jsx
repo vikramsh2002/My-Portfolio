@@ -14,7 +14,7 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   certifications,
   education,
@@ -28,17 +28,24 @@ import {
 const asset = (path) => `${import.meta.env.BASE_URL}${path}`;
 const resumeHref = asset("resume/Vikram_Sharma_Python_Backend_Engineer.pdf");
 const defaultProjectImage = "images/Projects/headlines.png";
+const projectFilters = [
+  "All",
+  "Python",
+  "TensorFlow",
+  "APIs",
+  "ML",
+  "Healthcare",
+  "Java",
+  "Spring Boot",
+  "Microservices",
+  "MongoDB",
+];
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All");
   const featuredProjects = projects.filter((project) => project.featured);
   const libraryProjects = projects.filter((project) => !project.featured);
-
-  const filters = useMemo(() => {
-    const tags = projects.flatMap((project) => project.tags);
-    return ["All", ...Array.from(new Set(tags)).slice(0, 9)];
-  }, []);
 
   const shownProjects = libraryProjects.filter(
     (project) => activeFilter === "All" || project.tags.includes(activeFilter)
@@ -170,7 +177,7 @@ function App() {
           </div>
 
           <div className="project-tools" aria-label="Project filters">
-            {filters.map((filter) => (
+            {projectFilters.map((filter) => (
               <button
                 className={filter === activeFilter ? "filter active" : "filter"}
                 key={filter}
