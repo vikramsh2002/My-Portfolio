@@ -17,6 +17,31 @@ on:
         required: true
         default: false
         type: boolean
+      deploy_preview:
+        description: "Deploy a preview after creating the project PR."
+        required: true
+        default: true
+        type: boolean
+      preview_repository:
+        description: "Preview hosting repository in owner/name format."
+        required: true
+        default: "vikramsh2002/My-Portfolio-Preview"
+        type: string
+      preview_branch:
+        description: "Branch used by GitHub Pages in the preview repository."
+        required: true
+        default: "gh-pages"
+        type: string
+      preview_base:
+        description: "Vite base path for the preview Pages site."
+        required: true
+        default: "/My-Portfolio-Preview/"
+        type: string
+      preview_url:
+        description: "Public preview URL."
+        required: true
+        default: "https://vikramsh2002.github.io/My-Portfolio-Preview/"
+        type: string
       card_image_url:
         description: "Optional image URL to use for the project card when no live site screenshot is available."
         required: false
@@ -42,6 +67,11 @@ jobs:
       UPDATE_TEXT: ${{ github.event.client_payload.linkedin_update || github.event.inputs.linkedin_update }}
       MODEL_ID: ${{ github.event.client_payload.model || github.event.inputs.model || 'openai/gpt-4o' }}
       AUTO_MERGE: ${{ github.event.client_payload.auto_merge || github.event.inputs.auto_merge || 'false' }}
+      DEPLOY_PREVIEW: ${{ github.event.client_payload.deploy_preview || github.event.inputs.deploy_preview || 'true' }}
+      PREVIEW_REPOSITORY: ${{ github.event.client_payload.preview_repository || github.event.inputs.preview_repository || 'vikramsh2002/My-Portfolio-Preview' }}
+      PREVIEW_BRANCH: ${{ github.event.client_payload.preview_branch || github.event.inputs.preview_branch || 'gh-pages' }}
+      PREVIEW_BASE: ${{ github.event.client_payload.preview_base || github.event.inputs.preview_base || '/My-Portfolio-Preview/' }}
+      PREVIEW_URL: ${{ github.event.client_payload.preview_url || github.event.inputs.preview_url || 'https://vikramsh2002.github.io/My-Portfolio-Preview/' }}
       CARD_IMAGE_URL: ${{ github.event.client_payload.card_image_url || github.event.inputs.card_image_url }}
     steps:
       - name: Checkout
@@ -156,9 +186,121 @@ jobs:
 
           echo "Triggered Portfolio V2 CI for $BRANCH_NAME." >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Build preview
+        id: preview_build
+        if: steps.pr.outputs.pr_url != '' && env.DEPLOY_PREVIEW == 'true'
+        continue-on-error: true
+        working-directory: portfolio-v2
+        env:
+          VITE_BASE: ${{ env.PREVIEW_BASE }}
+        run: npm run build
+
+      - name: Smoke check preview artifact
+        id: preview_smoke
+        if: steps.pr.outputs.pr_url != '' && env.DEPLOY_PREVIEW == 'true' && steps.preview_build.outcome == 'success'
+        continue-on-error: true
+        env:
+          PROJECT_TITLE: ${{ steps.apply.outputs.project_title }}
+        run: |
+          if [ -z "$PROJECT_TITLE" ]; then
+            echo "No project title was available for preview smoke checking." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if grep -R --include='*.html' --include='*.js' --fixed-strings --quiet "$PROJECT_TITLE" portfolio-v2/dist; then
+            echo "Preview artifact contains project title: $PROJECT_TITLE" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Preview artifact does not contain expected project title: $PROJECT_TITLE" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Deploy generated preview
+        id: preview_deploy
+        if: steps.pr.outputs.pr_url != '' && env.DEPLOY_PREVIEW == 'true' && steps.preview_build.outcome == 'success' && steps.preview_smoke.outcome == 'success'
+        continue-on-error: true
+        env:
+          PORTFOLIO_PREVIEW_TOKEN: ${{ secrets.PORTFOLIO_PREVIEW_TOKEN }}
+          SOURCE_REF: ${{ steps.pr.outputs.branch_name }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$PORTFOLIO_PREVIEW_TOKEN" ]; then
+            echo "PORTFOLIO_PREVIEW_TOKEN is required to push to $PREVIEW_REPOSITORY." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          SOURCE_SHA="$(git rev-parse HEAD)"
+          PREVIEW_LINK="${PREVIEW_URL%/}/?v=${SOURCE_SHA}#projects"
+          PREVIEW_REMOTE="https://x-access-token:${PORTFOLIO_PREVIEW_TOKEN}@github.com/${PREVIEW_REPOSITORY}.git"
+
+          git clone --depth 1 --branch "$PREVIEW_BRANCH" "$PREVIEW_REMOTE" _preview || {
+            git clone --depth 1 "$PREVIEW_REMOTE" _preview
+            git -C _preview checkout --orphan "$PREVIEW_BRANCH"
+            git -C _preview rm -rf . || true
+          }
+
+          find _preview -mindepth 1 \
+            ! -path "_preview/.git" \
+            ! -path "_preview/.git/*" \
+            -exec rm -rf {} +
+
+          cp -R portfolio-v2/dist/. _preview/
+          touch _preview/.nojekyll
+
+          cat > _preview/preview-metadata.json <<EOF
+          {
+            "source_repository": "$GITHUB_REPOSITORY",
+            "source_ref": "$SOURCE_REF",
+            "source_sha": "$SOURCE_SHA",
+            "preview_base": "$PREVIEW_BASE",
+            "preview_url": "$PREVIEW_URL",
+            "deployed_at": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          }
+          EOF
+
+          git -C _preview config user.name "github-actions[bot]"
+          git -C _preview config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C _preview add .
+
+          if git -C _preview diff --cached --quiet; then
+            echo "Preview repository already matches this build." >> "$GITHUB_STEP_SUMMARY"
+          else
+            git -C _preview commit -m "Deploy preview for ${GITHUB_REPOSITORY}@${SOURCE_SHA::7}"
+            git -C _preview push origin "$PREVIEW_BRANCH"
+          fi
+
+          {
+            echo "## Portfolio Preview"
+            echo
+            echo "- Preview URL: $PREVIEW_LINK"
+            echo "- Preview repository: $PREVIEW_REPOSITORY"
+            echo "- Preview branch: $PREVIEW_BRANCH"
+            echo "- Source ref: $SOURCE_REF"
+            echo "- Source SHA: $SOURCE_SHA"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "preview_link=$PREVIEW_LINK" >> "$GITHUB_OUTPUT"
+          echo "source_sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Comment preview link on PR
+        if: steps.preview_deploy.outputs.preview_link != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ steps.pr.outputs.pr_url }}
+          PREVIEW_LINK: ${{ steps.preview_deploy.outputs.preview_link }}
+          SOURCE_REF: ${{ steps.pr.outputs.branch_name }}
+          SOURCE_SHA: ${{ steps.preview_deploy.outputs.source_sha }}
+        run: |
+          PR_NUMBER="${PR_URL##*/}"
+          gh pr comment "$PR_NUMBER" --body "Portfolio preview deployed:
+
+          $PREVIEW_LINK
+
+          Source: $SOURCE_REF @ ${SOURCE_SHA:0:7}"
+
       - name: Ask for review on blocked update
         id: review_issue
-        if: always() && (steps.apply.outcome == 'failure' || steps.build.outcome == 'failure' || steps.apply.outputs.risk == 'high' || steps.apply.outputs.intent == 'needs_review' || steps.apply.outputs.action == 'needs_review' || steps.apply.outputs.image_status == 'missing' || steps.apply.outputs.image_status == 'failed')
+        if: always() && (steps.apply.outcome == 'failure' || steps.build.outcome == 'failure' || steps.apply.outputs.risk == 'high' || steps.apply.outputs.intent == 'needs_review' || steps.apply.outputs.action == 'needs_review' || steps.apply.outputs.image_status == 'missing' || steps.apply.outputs.image_status == 'failed' || (env.DEPLOY_PREVIEW == 'true' && (steps.preview_build.outcome == 'failure' || steps.preview_smoke.outcome == 'failure' || steps.preview_deploy.outcome == 'failure')))
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -174,6 +316,10 @@ jobs:
             echo "- Image status: ${{ steps.apply.outputs.image_status }}"
             echo "- Image path: ${{ steps.apply.outputs.image_path }}"
             echo "- Image source: ${{ steps.apply.outputs.image_source }}"
+            echo "- Preview build status: ${{ steps.preview_build.outcome }}"
+            echo "- Preview smoke status: ${{ steps.preview_smoke.outcome }}"
+            echo "- Preview deploy status: ${{ steps.preview_deploy.outcome }}"
+            echo "- Preview URL: ${{ steps.preview_deploy.outputs.preview_link }}"
             echo "- Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             echo
             if [ "${{ steps.apply.outputs.image_status }}" = "missing" ] || [ "${{ steps.apply.outputs.image_status }}" = "failed" ]; then
@@ -234,8 +380,14 @@ jobs:
 
           echo "Review email sent to $ALERT_EMAIL." >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Fail when preview is broken
+        if: always() && env.DEPLOY_PREVIEW == 'true' && (steps.preview_build.outcome == 'failure' || steps.preview_smoke.outcome == 'failure' || steps.preview_deploy.outcome == 'failure')
+        run: |
+          echo "Portfolio preview failed, so auto-merge is blocked." >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+
       - name: Auto-merge low-risk project update
-        if: env.AUTO_MERGE == 'true' && steps.apply.outputs.risk == 'low' && steps.pr.outputs.pr_url != ''
+        if: env.AUTO_MERGE == 'true' && steps.apply.outputs.risk == 'low' && steps.pr.outputs.pr_url != '' && (env.DEPLOY_PREVIEW != 'true' || (steps.preview_smoke.outcome == 'success' && steps.preview_deploy.outcome == 'success'))
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
