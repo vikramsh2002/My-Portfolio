@@ -1,5 +1,29 @@
 [
   {
+    "title": "VRL Learning Navigator",
+    "subtitle": "Learning guidance assistant",
+    "image": "images/Projects/vrl-learning-navigator.png",
+    "description": "A Streamlit-based application providing course discovery, personalized learning paths, and progress tracking, integrated with compatibility validation and recommendation features.",
+    "impact": "Helps learners identify suitable courses, craft personalized learning paths, and monitor progress effectively, enhancing online education experiences.",
+    "tags": [
+      "Python",
+      "Streamlit",
+      "Recommender",
+      "Data"
+    ],
+    "featured": true,
+    "links": [
+      {
+        "label": "Source",
+        "href": "https://github.com/vikramsh2002/VRL-Learning-Navigator"
+      },
+      {
+        "label": "Live app",
+        "href": "https://vrl-learning-navigator.streamlit.app/"
+      }
+    ]
+  },
+  {
     "title": "Dr. CNN",
     "subtitle": "Lung condition detection",
     "image": "images/Projects/DrCnn.jpg",
