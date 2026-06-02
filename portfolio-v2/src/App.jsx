@@ -28,28 +28,11 @@ import {
 const asset = (path) => `${import.meta.env.BASE_URL}${path}`;
 const resumeHref = asset("resume/Vikram_Sharma_Python_Backend_Engineer.pdf");
 const defaultProjectImage = "images/Projects/headlines.png";
-const projectFilters = [
-  "All",
-  "Python",
-  "TensorFlow",
-  "APIs",
-  "ML",
-  "Healthcare",
-  "Java",
-  "Spring Boot",
-  "Microservices",
-  "MongoDB",
-];
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("All");
   const featuredProjects = projects.filter((project) => project.featured);
   const libraryProjects = projects.filter((project) => !project.featured);
-
-  const shownProjects = libraryProjects.filter(
-    (project) => activeFilter === "All" || project.tags.includes(activeFilter)
-  );
 
   return (
     <div className="app-shell">
@@ -176,21 +159,8 @@ function App() {
               ))}
           </div>
 
-          <div className="project-tools" aria-label="Project filters">
-            {projectFilters.map((filter) => (
-              <button
-                className={filter === activeFilter ? "filter active" : "filter"}
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                type="button"
-              >
-                {filter}
-              </button>
-            ))}
-          </div>
-
           <div className="project-grid">
-            {shownProjects.map((project) => (
+            {libraryProjects.map((project) => (
               <ProjectCard key={project.title} project={project} />
             ))}
           </div>
